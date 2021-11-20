@@ -11,8 +11,6 @@
 //#include "renderer.h"
 #include "glCanvas.h"
 
-void tmpRender() {}
-
 int main(int argc, char *argv[]) {
     char *input_file = nullptr;
     int width = 100;
@@ -67,7 +65,7 @@ int main(int argc, char *argv[]) {
 
     auto parser = new SceneParser(input_file);
     auto canvas = new GLCanvas;
-    canvas->initialize(parser, tmpRender);
+    canvas->initialize(parser, nullptr);
 //    if (output_file) {
 //        auto colorImg = new Image(width, height);
 //        auto colorRenderer = new DiffuseRenderer(colorImg, parser, shade_back);
