@@ -235,9 +235,8 @@ Material* SceneParser::parsePhongMaterial() {
       break;
     }
   }
-//  Material *answer = new PhongMaterial(diffuseColor,specularColor,exponent); TODO
-//  return answer; TODO
-    return nullptr; // FIXME
+  Material *answer = new PhongMaterial(diffuseColor,specularColor,exponent);
+  return answer;
 }
 
 // ====================================================================
