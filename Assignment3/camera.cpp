@@ -67,6 +67,7 @@ void OrthographicCamera::dollyCamera(float dist) {
     // ASSIGNMENT 3: Fix any other affected values
     // ===========================================
 
+    // nothing to do here
 
 }
 
@@ -88,7 +89,7 @@ void OrthographicCamera::truckCamera(float dx, float dy) {
     // ASSIGNMENT 3: Fix any other affected values
     // ===========================================
 
-
+    this->horizontal = horizontal;
 }
 
 // ====================================================================
@@ -118,7 +119,7 @@ void OrthographicCamera::rotateCamera(float rx, float ry) {
     // ASSIGNMENT 3: Fix any other affected values
     // ===========================================
 
-
+    this->horizontal = horizontal;
 }
 
 Ray PerspectiveCamera::generateRay(Vec2f point) {
@@ -178,7 +179,7 @@ void PerspectiveCamera::dollyCamera(float dist) {
     // ASSIGNMENT 3: Fix any other affected values
     // ===========================================
 
-
+    // nothing to do here
 }
 
 // ====================================================================
@@ -199,7 +200,7 @@ void PerspectiveCamera::truckCamera(float dx, float dy) {
     // ASSIGNMENT 3: Fix any other affected values
     // ===========================================
 
-
+    this->horizontal = horizontal;
 }
 
 // ====================================================================
@@ -230,5 +231,5 @@ void PerspectiveCamera::rotateCamera(float rx, float ry) {
     // ASSIGNMENT 3: Fix any other affected values
     // ===========================================
 
-
+    this->horizontal = horizontal;
 }

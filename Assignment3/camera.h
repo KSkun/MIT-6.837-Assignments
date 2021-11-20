@@ -100,6 +100,8 @@ public:
 protected:
     Vec3f center, direction, up, horizontal;
     float angle, side, screenDist;
+    // screenDist: distance from camera center to virtual screen center
+    // side: side length of virtual screen
 };
 
 #endif //ASSIGNMENT1_CAMERA_H
