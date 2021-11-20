@@ -21,8 +21,8 @@ Background {
 
 Materials {
     numMaterials 2
-    Material { diffuseColor 1 0 0 }
-    Material { diffuseColor 0 0 1 }
+    PhongMaterial { diffuseColor 1 0 0 }
+    PhongMaterial { diffuseColor 0 0 1 }
 }
 
 Group {

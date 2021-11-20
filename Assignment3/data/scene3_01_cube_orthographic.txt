@@ -1,9 +1,9 @@
 
-PerspectiveCamera {
+OrthographicCamera {
     center 5 5 10 
     direction -0.5 -0.5 -1
     up 0 1 0
-    angle 30
+    size 4
 }
 
 Lights {
@@ -21,11 +21,14 @@ Background {
 
 Materials {
     numMaterials 1
-    Material { diffuseColor 1 0 0 }
+    PhongMaterial {	
+        diffuseColor 1 0 0 
+    }
 }
 
 Group {
     numObjects 1
+
     MaterialIndex 0
     TriangleMesh {
         obj_file cube.obj
