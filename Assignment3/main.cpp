@@ -2,6 +2,9 @@
 #include <cassert>
 #include <cstring>
 
+#include <windows.h>
+#include <GL/glut.h>
+
 #include "scene_parser.h"
 //#include "image.h"
 #include "camera.h"
@@ -12,6 +15,8 @@
 #include "glCanvas.h"
 
 int main(int argc, char *argv[]) {
+    glutInit(&argc, argv);
+
     char *input_file = nullptr;
     int width = 100;
     int height = 100;
