@@ -3,12 +3,15 @@
 #include <cstring>
 
 #include "scene_parser.h"
-#include "image.h"
+//#include "image.h"
 #include "camera.h"
 #include "hit.h"
 #include "group.h"
 #include "material.h"
-#include "renderer.h"
+//#include "renderer.h"
+#include "glCanvas.h"
+
+void tmpRender() {}
 
 int main(int argc, char *argv[]) {
     char *input_file = nullptr;
@@ -58,29 +61,31 @@ int main(int argc, char *argv[]) {
             shade_back = true;
         } else {
             printf("whoops error with command line argument %d: '%s'\n", i, argv[i]);
-            assert(0);
+//            assert(0);
         }
     }
 
     auto parser = new SceneParser(input_file);
-    if (output_file) {
-        auto colorImg = new Image(width, height);
-        auto colorRenderer = new DiffuseRenderer(colorImg, parser, shade_back);
-        colorRenderer->Render();
-        colorImg->SaveTGA(output_file);
-    }
-    if (depth_file) {
-        auto depthImg = new Image(width, height);
-        auto depthRenderer = new DepthRenderer(depthImg, parser, depth_min, depth_max);
-        depthRenderer->Render();
-        depthImg->SaveTGA(depth_file);
-    }
-    if (normals_file) {
-        auto normalsFile = new Image(width, height);
-        auto normalsRenderer = new NormalRenderer(normalsFile, parser);
-        normalsRenderer->Render();
-        normalsFile->SaveTGA(normals_file);
-    }
+    auto canvas = new GLCanvas;
+    canvas->initialize(parser, tmpRender);
+//    if (output_file) {
+//        auto colorImg = new Image(width, height);
+//        auto colorRenderer = new DiffuseRenderer(colorImg, parser, shade_back);
+//        colorRenderer->Render();
+//        colorImg->SaveTGA(output_file);
+//    }
+//    if (depth_file) {
+//        auto depthImg = new Image(width, height);
+//        auto depthRenderer = new DepthRenderer(depthImg, parser, depth_min, depth_max);
+//        depthRenderer->Render();
+//        depthImg->SaveTGA(depth_file);
+//    }
+//    if (normals_file) {
+//        auto normalsFile = new Image(width, height);
+//        auto normalsRenderer = new NormalRenderer(normalsFile, parser);
+//        normalsRenderer->Render();
+//        normalsFile->SaveTGA(normals_file);
+//    }
 
     return 0;
 }

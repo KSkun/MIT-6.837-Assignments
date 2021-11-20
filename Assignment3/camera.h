@@ -5,6 +5,10 @@
 #ifndef ASSIGNMENT1_CAMERA_H
 #define ASSIGNMENT1_CAMERA_H
 
+#include <windows.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+
 #include "ray.h"
 
 class Camera {
@@ -12,6 +16,16 @@ public:
     virtual Ray generateRay(Vec2f point) = 0;
 
     [[nodiscard]] virtual float getTMin() const = 0;
+
+    virtual void glInit(int w, int h) = 0;
+
+    virtual void glPlaceCamera() = 0;
+
+    virtual void dollyCamera(float dist) = 0;
+
+    virtual void truckCamera(float dx, float dy) = 0;
+
+    virtual void rotateCamera(float rx, float ry) = 0;
 };
 
 class OrthographicCamera : public Camera {
@@ -35,6 +49,16 @@ public:
 
     [[nodiscard]] float getTMin() const override;
 
+    void glInit(int w, int h) override;
+
+    void glPlaceCamera() override;
+
+    void dollyCamera(float dist) override;
+
+    void truckCamera(float dx, float dy) override;
+
+    void rotateCamera(float rx, float ry) override;
+
 protected:
     Vec3f center, up, horizontal, direction;
     float size;
@@ -54,6 +78,7 @@ public:
         Vec3f::Cross3(this->up, this->horizontal, direction);
         this->up.Normalize();
 
+        this->angle = angle;
         screenDist = 1;
         side = screenDist * tan(angle / 2) * 2;
     }
@@ -62,9 +87,19 @@ public:
 
     [[nodiscard]] float getTMin() const override;
 
+    void glInit(int w, int h) override;
+
+    void glPlaceCamera() override;
+
+    void dollyCamera(float dist) override;
+
+    void truckCamera(float dx, float dy) override;
+
+    void rotateCamera(float rx, float ry) override;
+
 protected:
-    Vec3f center, direction, up, horizontal, loPos, hiPos;
-    float side, screenDist;
+    Vec3f center, direction, up, horizontal;
+    float angle, side, screenDist;
 };
 
 #endif //ASSIGNMENT1_CAMERA_H

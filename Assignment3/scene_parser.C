@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -159,7 +161,7 @@ void SceneParser::parseLights() {
   // read in the number of objects
   getToken(token); assert (!strcmp(token, "numLights"));
   num_lights = readInt();
-  lights = new (Light*)[num_lights];
+  lights = new Light*[num_lights];
   // read in the objects
   int count = 0;
   while (num_lights > count) {
@@ -196,7 +198,7 @@ void SceneParser::parseMaterials() {
   // read in the number of objects
   getToken(token); assert (!strcmp(token, "numMaterials"));
   num_materials = readInt();
-  materials = new (Material*)[num_materials];
+  materials = new Material*[num_materials];
   // read in the objects
   int count = 0;
   while (num_materials > count) {
@@ -233,8 +235,9 @@ Material* SceneParser::parsePhongMaterial() {
       break;
     }
   }
-  Material *answer = new PhongMaterial(diffuseColor,specularColor,exponent);
-  return answer;
+//  Material *answer = new PhongMaterial(diffuseColor,specularColor,exponent); TODO
+//  return answer; TODO
+    return nullptr; // FIXME
 }
 
 // ====================================================================
