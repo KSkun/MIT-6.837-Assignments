@@ -22,7 +22,7 @@ char *depth_file = nullptr;
 void Render() {
     if (output_file) {
         auto colorImg = new Image(width, height);
-        auto colorRenderer = new DiffuseRenderer(colorImg, parser, shadeBack);
+        auto colorRenderer = new DiffuseRenderer(colorImg, parser);
         colorRenderer->Render();
         colorImg->SaveTGA(output_file);
     }
@@ -41,9 +41,7 @@ void Render() {
 }
 
 int main(int argc, char *argv[]) {
-    // sample command line:
-    // raytracer -input scene1_1.txt -size 200 200 -output output1_1.tga -depth 9 10 depth1_1.tga
-
+    // process command line parameters
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "-input")) {
             i++;
@@ -74,8 +72,6 @@ int main(int argc, char *argv[]) {
             i++;
             assert(i < argc);
             depth_file = argv[i];
-        } else if (!strcmp(argv[i], "-shade_back")) {
-            shadeBack = true;
         } else if (!strcmp(argv[i], "-gui")) {
             gui = true;
         } else if (!strcmp(argv[i], "-tessellation")) {

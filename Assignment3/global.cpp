@@ -6,7 +6,6 @@
 
 const float EPSILON = 1e-6;
 
-bool shadeBack = false;
 bool gouraud = false;
 bool gui = false;
 

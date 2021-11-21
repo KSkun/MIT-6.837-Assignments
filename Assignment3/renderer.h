@@ -65,13 +65,10 @@ public:
 
 class DiffuseRenderer : public Renderer {
 public:
-    explicit DiffuseRenderer(Image *image = nullptr, SceneParser *scene = nullptr, bool shadeBack = false) :
-            Renderer(image, scene), shadeBack(shadeBack) {}
+    explicit DiffuseRenderer(Image *image = nullptr, SceneParser *scene = nullptr) :
+            Renderer(image, scene) {}
 
     void Render() override;
-
-protected:
-    bool shadeBack;
 };
 
 #endif //ASSIGNMENT2_RENDERER_H
