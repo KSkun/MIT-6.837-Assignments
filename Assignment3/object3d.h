@@ -5,6 +5,9 @@
 #ifndef ASSIGNMENT1_OBJECT3D_H
 #define ASSIGNMENT1_OBJECT3D_H
 
+#include <windows.h>
+#include <GL/gl.h>
+
 #include "ray.h"
 #include "hit.h"
 
@@ -15,6 +18,8 @@ public:
     Object3D() : Object3D(nullptr) {}
 
     virtual bool intersect(const Ray &r, Hit &h, float tMin) = 0;
+
+    virtual void paint() = 0;
 
 protected:
     Material *material;

@@ -18,6 +18,8 @@ public:
 
     bool intersect(const Ray &r, Hit &h, float tMin) override;
 
+    void paint() override;
+
 protected:
     static void TransformPosition(Vec3f &dst, const Vec3f &src, const Matrix &mat);
 

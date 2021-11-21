@@ -13,7 +13,11 @@ public:
 
     bool intersect(const Ray &r, Hit &h, float tMin) override;
 
+    void paint() override;
+
 protected:
+    constexpr static const float BIG = 1e5; // used in GL draw
+
     Vec3f normal;
     float d;
 };

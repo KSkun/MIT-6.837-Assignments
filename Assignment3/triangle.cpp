@@ -40,13 +40,21 @@ bool Triangle::intersect(const Ray &r, Hit &h, float tMin) {
     if (gamma < -EPSILON || gamma > 1 + EPSILON) return false;
     auto t = detA3 / detA;
     if (t < tMin - EPSILON) return false;
-    Vec3f normal;
-    Vec3f::Cross3(normal, b - a, c - a);
-    normal.Normalize();
 //    auto nDotRd = normal.Dot3(r.getDirection());
 //    if (nDotRd > -EPSILON) {
 //        normal.Scale(-1, -1, -1);
 //    }
     h.set(t, material, normal, r);
     return true;
+}
+
+void Triangle::paint() {
+    glBegin(GL_TRIANGLES);
+    // set normal
+    glNormal3f(normal.x(), normal.y(), normal.z());
+    // set vertices
+    glVertex3f(a.x(), a.y(), a.z());
+    glVertex3f(b.x(), b.y(), b.z());
+    glVertex3f(c.x(), c.y(), c.z());
+    glEnd();
 }

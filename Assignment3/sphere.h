@@ -20,7 +20,11 @@ public:
 
     bool intersect(const Ray &r, Hit &h, float tMin) override;
 
-private:
+    void paint() override;
+
+protected:
+    Vec3f getPoint(float phi, float theta);
+
     Vec3f center;
     float radius;
 };

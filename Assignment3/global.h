@@ -7,4 +7,8 @@
 
 extern const float EPSILON;
 
+extern int thetaSteps, phiSteps; // used for tessellation
+
+extern bool isGouraud;
+
 #endif //ASSIGNMENT2_GLOBAL_H

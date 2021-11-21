@@ -24,6 +24,8 @@ public:
 
     bool intersect(const Ray &r, Hit &h, float tMin) override;
 
+    void paint() override;
+
 private:
     int objectNum;
     Object3D **objects;

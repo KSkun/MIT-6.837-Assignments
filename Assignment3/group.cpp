@@ -24,3 +24,9 @@ bool Group::intersect(const Ray &r, Hit &h, float tMin) {
     }
     return flagHasInter;
 }
+
+void Group::paint() {
+    for (int i = 0; i < objectNum; i++) {
+        objects[i]->paint(); // iterate over objects and call paint()
+    }
+}
