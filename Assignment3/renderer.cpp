@@ -76,30 +76,15 @@ void DiffuseRenderer::Render() {
             auto interRes = scene->getGroup()->intersect(ray, hit, camera->getTMin());
             if (!interRes) continue;
             // has intersection
+            auto material = hit.getMaterial();
             Vec3f color = Vec3f(0, 0, 0);
-            auto diffuseCol = hit.getMaterial()->getDiffuseColor();
-
             for (int iLight = 0; iLight < scene->getNumLights(); iLight++) {
                 auto light = scene->getLight(iLight);
                 Vec3f lightDir, lightCol;
                 float distanceToLight;
                 light->getIllumination(hit.getIntersectionPoint(), lightDir, lightCol, distanceToLight);
-
-                auto n = hit.getNormal();
-                // shade back
-                if (shadeBack && ray.getDirection().Dot3(n) > -EPSILON) {
-                    n.Scale(-1, -1, -1);
-                }
-
-                auto d = max(lightDir.Dot3(n), 0.0f);
-                lightCol.Scale(d * diffuseCol.x(), d * diffuseCol.y(), d * diffuseCol.z());
-                color += lightCol;
+                color += material->Shade(ray, hit, lightDir, lightCol);
             }
-            auto ambientCol = scene->getAmbientLight();
-            ambientCol.Scale(diffuseCol.x(), diffuseCol.y(), diffuseCol.z());
-            color += ambientCol;
-            color.Clamp();
-
             image->SetPixel(i, j, color);
         }
     }
