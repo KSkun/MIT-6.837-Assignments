@@ -124,7 +124,7 @@ void GLCanvas::display(void)
   // DEFAULT: single pass rendering
   // Draw the scene once
   SPECULAR_FIX_WHICH_PASS = 0;
-//  scene->getGroup()->paint(); FIXME
+  scene->getGroup()->paint();
 
 #else
 
