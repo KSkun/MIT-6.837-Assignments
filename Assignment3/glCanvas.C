@@ -108,7 +108,7 @@ void GLCanvas::display(void)
   // ========================================================
   // DRAW AXES
   // remove this line once you've started rendering primitive objects
-  drawAxes(); 
+//  drawAxes();
   // ========================================================
 
   glEnable(GL_LIGHTING);
