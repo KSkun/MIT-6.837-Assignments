@@ -222,10 +222,11 @@ void GLCanvas::motion(int x, int y) {
 void GLCanvas::keyboard(unsigned char key, int x, int y) {
   switch (key) {
   case 'r':  case 'R':
-    printf("Rendering scene... "); 
+    printf("Rendering scene... ");
     fflush(stdout);
     if (renderFunction) renderFunction();
     printf("done.\n");
+    fflush(stdout);
     break;
   case 'q':  case 'Q':
     exit(0);
