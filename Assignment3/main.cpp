@@ -10,9 +10,7 @@
 #include "camera.h"
 #include "hit.h"
 #include "group.h"
-#include "material.h"
 #include "renderer.h"
-#include "glCanvas.h"
 #include "global.h"
 
 SceneParser *parser;
@@ -98,7 +96,7 @@ int main(int argc, char *argv[]) {
     parser = new SceneParser(input_file);
     if (gui) {
         glutInit(&argc, argv);
-        GLCanvas *glCanvas = new GLCanvas;
+        auto *glCanvas = new GLCanvas;
         glCanvas->initialize(parser, Render);
     } else {
         Render();
