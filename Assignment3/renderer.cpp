@@ -85,6 +85,7 @@ void DiffuseRenderer::Render() {
                 light->getIllumination(hit.getIntersectionPoint(), lightDir, lightCol, distanceToLight);
                 color += material->Shade(ray, hit, lightDir, lightCol);
             }
+            color += scene->getAmbientLight() * material->getDiffuseColor();
             image->SetPixel(i, j, color);
         }
     }
