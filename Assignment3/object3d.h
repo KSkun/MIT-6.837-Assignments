@@ -8,6 +8,7 @@
 #include <windows.h>
 #include <GL/gl.h>
 
+#include "material.h"
 #include "ray.h"
 #include "hit.h"
 

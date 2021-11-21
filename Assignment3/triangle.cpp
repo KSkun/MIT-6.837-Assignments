@@ -49,6 +49,7 @@ bool Triangle::intersect(const Ray &r, Hit &h, float tMin) {
 }
 
 void Triangle::paint() {
+    material->glSetMaterial();
     glBegin(GL_TRIANGLES);
     // set normal
     glNormal3f(normal.x(), normal.y(), normal.z());

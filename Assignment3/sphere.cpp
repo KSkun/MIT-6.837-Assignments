@@ -51,6 +51,7 @@ void Sphere::paint() {
     float deltaPhi = M_PI / phiSteps,
             deltaTheta = 2 * M_PI / thetaSteps;
 
+    material->glSetMaterial();
     glBegin(GL_TRIANGLES);
     // phi from -90 to 90
     for (int iPhi = 1; iPhi <= phiSteps; iPhi++) {

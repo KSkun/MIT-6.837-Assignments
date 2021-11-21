@@ -41,6 +41,7 @@ void Plane::paint() {
             p3 = BIG * b1 - BIG * b2,
             p4 = -BIG * b1 - BIG * b2;
 
+    material->glSetMaterial();
     glBegin(GL_QUADS);
     // set normal
     glNormal3f(normal.x(), normal.y(), normal.z());
