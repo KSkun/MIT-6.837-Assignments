@@ -37,7 +37,8 @@ protected:
 class DepthRenderer : public Renderer {
 public:
     explicit DepthRenderer(Image *image = nullptr, SceneParser *scene = nullptr,
-                           float depthMin = -FP_INFINITE, float depthMax = FP_INFINITE) :
+                           float depthMin = -std::numeric_limits<float>::infinity(),
+                           float depthMax = std::numeric_limits<float>::infinity()) :
             Renderer(image, scene), depthMin(depthMin), depthMax(depthMax) {}
 
     void Render() override;

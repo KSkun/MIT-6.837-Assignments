@@ -12,7 +12,7 @@ void Group::addObject(int index, Object3D *object) {
 
 bool Group::intersect(const Ray &r, Hit &h, float tMin) {
     Hit hTmp;
-    float tTmp = FP_INFINITE;
+    float tTmp = std::numeric_limits<float>::infinity();
     bool flagHasInter = false;
     for (int i = 0; i < objectNum; i++) {
         auto obj = objects[i];

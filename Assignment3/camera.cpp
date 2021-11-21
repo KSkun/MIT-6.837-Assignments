@@ -14,7 +14,7 @@ Ray OrthographicCamera::generateRay(Vec2f point) {
 }
 
 float OrthographicCamera::getTMin() const {
-    return -FP_INFINITE; // negative infinity
+    return -std::numeric_limits<float>::infinity(); // negative infinity
 }
 
 // ====================================================================
