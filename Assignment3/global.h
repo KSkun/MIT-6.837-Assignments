@@ -7,8 +7,15 @@
 
 extern const float EPSILON;
 
-extern int thetaSteps, phiSteps; // used for tessellation
+extern bool shadeBack;
+extern bool gouraud;
+extern bool gui;
 
-extern bool isGouraud;
+extern int width;
+extern int height;
+extern int thetaSteps, phiSteps;
+
+extern float depthMin;
+extern float depthMax;
 
 #endif //ASSIGNMENT2_GLOBAL_H

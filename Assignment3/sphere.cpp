@@ -68,7 +68,7 @@ void Sphere::paint() {
                     p3 = getPoint(phi, lastTheta),
                     p4 = getPoint(phi, theta);
             Vec3f n1, n2, n3, n4;
-            if (!isGouraud) { // facet normal
+            if (!gouraud) { // facet normal
                 Vec3f::Cross3(n1, p2 - p1, p3 - p1);
                 n1.Normalize();
                 Vec3f::Cross3(n2, p4 - p2, p3 - p2);
@@ -81,7 +81,7 @@ void Sphere::paint() {
             }
 
             // send gl vertex commands
-            if (!isGouraud) {
+            if (!gouraud) {
                 if ((p1 - p2).Length() > EPSILON) {
                     glNormal3f(n1.x(), n1.y(), n1.z());
                     glVertex3f(p1.x(), p1.y(), p1.z());

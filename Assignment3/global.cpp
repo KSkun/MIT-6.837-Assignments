@@ -6,6 +6,13 @@
 
 const float EPSILON = 1e-6;
 
+bool shadeBack = false;
+bool gouraud = false;
+bool gui = false;
+
+int width = 100;
+int height = 100;
 int thetaSteps = 100, phiSteps = 100;
 
-bool isGouraud = false;
+float depthMin = 0;
+float depthMax = 1;

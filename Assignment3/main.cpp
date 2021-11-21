@@ -6,27 +6,43 @@
 #include <GL/glut.h>
 
 #include "scene_parser.h"
-//#include "image.h"
+#include "image.h"
 #include "camera.h"
 #include "hit.h"
 #include "group.h"
 #include "material.h"
-//#include "renderer.h"
+#include "renderer.h"
 #include "glCanvas.h"
+#include "global.h"
+
+SceneParser *parser;
+char *input_file = nullptr;
+char *output_file = nullptr;
+char *normals_file = nullptr;
+char *depth_file = nullptr;
+
+void Render() {
+    if (output_file) {
+        auto colorImg = new Image(width, height);
+        auto colorRenderer = new DiffuseRenderer(colorImg, parser, shadeBack);
+        colorRenderer->Render();
+        colorImg->SaveTGA(output_file);
+    }
+    if (depth_file) {
+        auto depthImg = new Image(width, height);
+        auto depthRenderer = new DepthRenderer(depthImg, parser, depthMin, depthMax);
+        depthRenderer->Render();
+        depthImg->SaveTGA(depth_file);
+    }
+    if (normals_file) {
+        auto normalsFile = new Image(width, height);
+        auto normalsRenderer = new NormalRenderer(normalsFile, parser);
+        normalsRenderer->Render();
+        normalsFile->SaveTGA(normals_file);
+    }
+}
 
 int main(int argc, char *argv[]) {
-    glutInit(&argc, argv);
-
-    char *input_file = nullptr;
-    int width = 100;
-    int height = 100;
-    char *output_file = nullptr;
-    char *normals_file = nullptr;
-    float depth_min = 0;
-    float depth_max = 1;
-    char *depth_file = nullptr;
-    bool shade_back = false;
-
     // sample command line:
     // raytracer -input scene1_1.txt -size 200 200 -output output1_1.tga -depth 9 10 depth1_1.tga
 
@@ -53,42 +69,40 @@ int main(int argc, char *argv[]) {
         } else if (!strcmp(argv[i], "-depth")) {
             i++;
             assert(i < argc);
-            depth_min = atof(argv[i]);
+            depthMin = atof(argv[i]);
             i++;
             assert(i < argc);
-            depth_max = atof(argv[i]);
+            depthMax = atof(argv[i]);
             i++;
             assert(i < argc);
             depth_file = argv[i];
         } else if (!strcmp(argv[i], "-shade_back")) {
-            shade_back = true;
+            shadeBack = true;
+        } else if (!strcmp(argv[i], "-gui")) {
+            gui = true;
+        } else if (!strcmp(argv[i], "-tessellation")) {
+            i++;
+            assert(i < argc);
+            thetaSteps = atoi(argv[i]);
+            i++;
+            assert(i < argc);
+            phiSteps = atoi(argv[i]);
+        } else if (!strcmp(argv[i], "-gouraud")) {
+            gouraud = true;
         } else {
             printf("whoops error with command line argument %d: '%s'\n", i, argv[i]);
-//            assert(0);
+            assert(0);
         }
     }
 
-    auto parser = new SceneParser(input_file);
-    auto canvas = new GLCanvas;
-    canvas->initialize(parser, nullptr);
-//    if (output_file) {
-//        auto colorImg = new Image(width, height);
-//        auto colorRenderer = new DiffuseRenderer(colorImg, parser, shade_back);
-//        colorRenderer->Render();
-//        colorImg->SaveTGA(output_file);
-//    }
-//    if (depth_file) {
-//        auto depthImg = new Image(width, height);
-//        auto depthRenderer = new DepthRenderer(depthImg, parser, depth_min, depth_max);
-//        depthRenderer->Render();
-//        depthImg->SaveTGA(depth_file);
-//    }
-//    if (normals_file) {
-//        auto normalsFile = new Image(width, height);
-//        auto normalsRenderer = new NormalRenderer(normalsFile, parser);
-//        normalsRenderer->Render();
-//        normalsFile->SaveTGA(normals_file);
-//    }
+    parser = new SceneParser(input_file);
+    if (gui) {
+        glutInit(&argc, argv);
+        GLCanvas *glCanvas = new GLCanvas;
+        glCanvas->initialize(parser, Render);
+    } else {
+        Render();
+    }
 
     return 0;
 }
