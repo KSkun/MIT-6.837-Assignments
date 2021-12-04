@@ -8,10 +8,13 @@ const float EPSILON = 1e-6;
 
 bool gouraud = false;
 bool gui = false;
+bool shadows = false;
 
 int width = 100;
 int height = 100;
 int thetaSteps = 100, phiSteps = 100;
+int bounces = 1;
 
 float depthMin = 0;
 float depthMax = 1;
+float weight = 0;
