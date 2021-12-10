@@ -21,4 +21,6 @@ extern float depthMin;
 extern float depthMax;
 extern float weight;
 
+int fcmp(float f);
+
 #endif //ASSIGNMENT2_GLOBAL_H

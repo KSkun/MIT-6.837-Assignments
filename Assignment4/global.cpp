@@ -2,6 +2,8 @@
 // Created by kskun on 2021/10/11.
 //
 
+#include <cmath>
+
 #include "global.h"
 
 const float EPSILON = 1e-6;
@@ -19,3 +21,8 @@ int bounces = 1;
 float depthMin = 0;
 float depthMax = 1;
 float weight = 0;
+
+int fcmp(float f) {
+    if (std::fabs(f) < EPSILON) return 0;
+    return f < 0 ? -1 : 1;
+}
