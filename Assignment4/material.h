@@ -57,6 +57,12 @@ public:
 
     void glSetMaterial() const override;
 
+    Vec3f getReflectiveColor() const { return reflectiveColor; }
+
+    Vec3f getTransparentColor() const { return transparentColor; }
+
+    float getIndexOfRefraction() const { return indexOfRefraction; }
+
 protected:
     Vec3f specularColor, reflectiveColor, transparentColor;
     float exponent, indexOfRefraction;
