@@ -11,8 +11,8 @@
 bool Sphere::intersect(const Ray &r, Hit &h, float tMin) {
     auto vecOriCen = center - r.getOrigin();
     auto disOriCen = vecOriCen.Length();
-    if (fabs(disOriCen) < EPSILON) { // ray origin on sphere, origin is intersection
-        if (0 < tMin - EPSILON) return false;
+    if (fcmp(disOriCen) == 0) { // ray origin on sphere, origin is intersection
+        if (fcmp(tMin) >= 0) return false;
         auto n = vecOriCen;
         n.Negate();
         n.Normalize();
@@ -21,21 +21,20 @@ bool Sphere::intersect(const Ray &r, Hit &h, float tMin) {
     }
 
     auto disOriVer = vecOriCen.Dot3(r.getDirection());
-    if (disOriVer < tMin - EPSILON) return false; // the sphere is behind the origin
+    if (fcmp(disOriVer - tMin) < 0) return false; // the sphere is behind the origin
 
     auto disVerSq = vecOriCen.Dot3(vecOriCen) - disOriVer * disOriVer;
-    if (disVerSq > radius * radius + EPSILON) return false; // the ray misses the sphere
+    if (fcmp(disVerSq - radius * radius) > 0) return false; // the ray misses the sphere
 
     auto disHitVer = sqrt(radius * radius - disVerSq);
     float t;
-    if (disOriCen > radius - EPSILON &&
-        disOriVer - disHitVer > tMin - EPSILON) { // ray origin outside the sphere
+    if (fcmp(disOriCen - radius) > 0 && fcmp(disOriVer - disHitVer - tMin) >= 0) { // ray origin outside the sphere
         t = disOriVer - disHitVer;
     } else { // ray origin inside the sphere
         t = disOriVer + disHitVer;
     }
 
-    if (t < tMin - EPSILON) return false; // intersection behind the camera
+    if (fcmp(t - tMin) < 0) return false; // intersection behind the camera
     auto n = r.pointAtParameter(t) - center;
     n.Normalize();
     h.set(t, material, n, r);

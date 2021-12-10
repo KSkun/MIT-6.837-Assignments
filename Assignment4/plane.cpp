@@ -8,15 +8,15 @@
 bool Plane::intersect(const Ray &r, Hit &h, float tMin) {
     auto rdDotN = r.getDirection().Dot3(normal);
     auto roDotN = r.getOrigin().Dot3(normal);
-    if (fabs(rdDotN) < EPSILON) {
-        if (fabs(roDotN) < EPSILON && 0 > tMin + EPSILON) {
+    if (fcmp(rdDotN) == 0) { // Rd dot N == 0, Rd vertical to N
+        if (fcmp(roDotN - d) == 0 && fcmp(tMin) <= 0) { // Ro dot N == 0 && 0 >= tMin, origin on plane
             h.set(0, material, normal, r);
             return true;
         }
         return false;
     }
     auto t = (d - roDotN) / rdDotN;
-    if (t < tMin - EPSILON) return false;
+    if (fcmp(t - tMin) < 0) return false; // t < tMin, intersection behind camera
     h.set(t, material, normal, r);
     return true;
 }
