@@ -74,12 +74,15 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight, float
         // reflections
         auto reflectiveColor = material->getReflectiveColor();
         if (reflectiveColor.Length() > 0) { // reflective material
-            Ray reflectiveRay = {hit.getIntersectionPoint(),
+            Ray reflectiveRay = {hit.getIntersectionPoint() - ray.getDirection() * 0.001f,
                                  mirrorDirection(hit.getNormal(), ray.getDirection())};
             Hit reflectiveHit;
             auto reflectiveResult = traceRay(reflectiveRay, 0, bounces + 1,
                                              weight * reflectiveColor.Length(), indexOfRefraction, reflectiveHit);
-            RayTree::AddReflectedSegment(reflectiveRay, 0, reflectiveHit.getT());
+            float reflectiveT = 1e10;
+
+            if (reflectiveHit.getMaterial() != nullptr) reflectiveT = reflectiveHit.getT();
+            RayTree::AddReflectedSegment(reflectiveRay, 0, reflectiveT);
             color += reflectiveColor * reflectiveResult;
         }
 
