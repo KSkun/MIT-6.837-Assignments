@@ -33,7 +33,7 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight, float
     // stop conditions
     // no intersection
     if (!group->intersect(ray, hit, tmin)) {
-        return {0, 0, 0};
+        return scene->getBackgroundColor();
     }
     // too many bounces
     if (bounces > maxBounces) {

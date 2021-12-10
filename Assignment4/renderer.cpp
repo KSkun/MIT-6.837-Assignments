@@ -102,9 +102,6 @@ void RayTraceRenderer::Render() {
             auto tracer = new RayTracer(scene, maxBounces, cutoffWeight);
             Hit hit;
             image->SetPixel(i, j, tracer->traceRay(ray, camera->getTMin(), 0, 1, 1, hit));
-            if (hit.getMaterial() == nullptr) {
-                image->SetPixel(i, j, scene->getBackgroundColor());
-            }
         }
     }
 }
