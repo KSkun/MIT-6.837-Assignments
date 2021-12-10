@@ -12,8 +12,10 @@
 #include "group.h"
 #include "renderer.h"
 #include "global.h"
+#include "ray_tracer.h"
 
 SceneParser *parser;
+RayTracer *tracer;
 char *input_file = nullptr;
 char *output_file = nullptr;
 char *normals_file = nullptr;
@@ -26,18 +28,25 @@ void Render() {
         colorRenderer->Render();
         colorImg->SaveTGA(output_file);
     }
-    if (depth_file) {
-        auto depthImg = new Image(width, height);
-        auto depthRenderer = new DepthRenderer(depthImg, parser, depthMin, depthMax);
-        depthRenderer->Render();
-        depthImg->SaveTGA(depth_file);
-    }
-    if (normals_file) {
-        auto normalsFile = new Image(width, height);
-        auto normalsRenderer = new NormalRenderer(normalsFile, parser);
-        normalsRenderer->Render();
-        normalsFile->SaveTGA(normals_file);
-    }
+//    if (depth_file) {
+//        auto depthImg = new Image(width, height);
+//        auto depthRenderer = new DepthRenderer(depthImg, parser, depthMin, depthMax);
+//        depthRenderer->Render();
+//        depthImg->SaveTGA(depth_file);
+//    }
+//    if (normals_file) {
+//        auto normalsFile = new Image(width, height);
+//        auto normalsRenderer = new NormalRenderer(normalsFile, parser);
+//        normalsRenderer->Render();
+//        normalsFile->SaveTGA(normals_file);
+//    }
+}
+
+void TraceRay(float x, float y) {
+    auto camera = parser->getCamera();
+    auto ray = camera->generateRay({x, y});
+    Hit hit;
+    tracer->traceRay(ray, camera->getTMin(), 0, 1, 1, hit);
 }
 
 int main(int argc, char *argv[]) {
@@ -102,10 +111,11 @@ int main(int argc, char *argv[]) {
     }
 
     parser = new SceneParser(input_file);
+    tracer = new RayTracer(parser, maxBounces, cutoffWeight);
     if (gui) {
         glutInit(&argc, argv);
         auto *glCanvas = new GLCanvas;
-        glCanvas->initialize(parser, Render);
+        glCanvas->initialize(parser, Render, TraceRay);
     } else {
         Render();
     }

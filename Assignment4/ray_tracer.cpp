@@ -1,0 +1,105 @@
+//
+// Created by kskun on 2021/11/28.
+//
+
+#include "ray_tracer.h"
+#include "light.h"
+#include "global.h"
+#include "rayTree.h"
+
+const float DEF_INDEX_OF_REFRACTION = 1;
+
+Vec3f mirrorDirection(const Vec3f &normal, const Vec3f &incoming) {
+    Vec3f result = incoming - 2 * incoming.Dot3(normal) * normal;
+    result.Normalize();
+    return result;
+}
+
+bool transmittedDirection(const Vec3f &normal, const Vec3f &incoming, float index_i, float index_t,
+                          Vec3f &transmitted) {
+    float index_r = index_i / index_t;
+    float nDotI = normal.Dot3(incoming);
+    float inSqrt = 1 - index_r * index_r * (1 - nDotI * nDotI);
+    if (inSqrt < 0) return false;
+    float coN = index_r * nDotI - sqrt(inSqrt), coI = -index_r;
+    transmitted = coN * normal + coI * incoming;
+    transmitted.Normalize();
+    return true;
+}
+
+Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight, float indexOfRefraction, Hit &hit) const {
+    // stop conditions
+    // no intersection
+    if (!group->intersect(ray, hit, tmin)) {
+        return {0, 0, 0};
+    }
+    // too many bounces
+    if (bounces > maxBounces) {
+        return {0, 0, 0};
+    }
+    // low weight
+    if (fcmp(weight - cutoffWeight) < 0) {
+        return {0, 0, 0};
+    }
+
+    if (weight == 1) { // main segment
+        RayTree::SetMainSegment(ray, tmin, hit.getT());
+    }
+    // local shading
+    Vec3f color = scene->getAmbientLight();
+    for (int iLight = 0; iLight < scene->getNumLights(); iLight++) {
+        // prepare light information
+        auto light = scene->getLight(iLight);
+        Vec3f dirToLight, lightColor;
+        float disToLight;
+        light->getIllumination(hit.getIntersectionPoint(), dirToLight, lightColor, disToLight);
+
+        // cast shadow ray and test if blocked
+        Ray lightRay = {hit.getIntersectionPoint() + dirToLight * EPSILON, dirToLight};
+        Hit lightHit;
+        if (group->intersect(lightRay, lightHit, 0) && fcmp(lightHit.getT() - disToLight) < 0) {
+            RayTree::AddShadowSegment(ray, 0, lightHit.getT());
+            continue;
+        }
+        RayTree::AddShadowSegment(lightRay, 0, disToLight);
+
+        color += hit.getMaterial()->Shade(ray, hit, dirToLight, lightColor);
+    }
+
+    auto material = dynamic_cast<PhongMaterial *>(hit.getMaterial());
+    if (material != nullptr) {
+        // reflections
+        auto reflectiveColor = material->getReflectiveColor();
+        if (reflectiveColor.Length() > 0) { // reflective material
+            Ray reflectiveRay = {hit.getIntersectionPoint(),
+                                 mirrorDirection(hit.getNormal(), ray.getDirection())};
+            Hit reflectiveHit;
+            auto reflectiveResult = traceRay(reflectiveRay, 0, bounces + 1,
+                                             weight * reflectiveColor.Length(), indexOfRefraction, reflectiveHit);
+            RayTree::AddReflectedSegment(reflectiveRay, 0, reflectiveHit.getT());
+            color += reflectiveColor * reflectiveResult;
+        }
+
+        // refractions
+        auto refractiveColor = material->getTransparentColor();
+        if (refractiveColor.Length() > 0) { // refractive material
+            auto realNormal = hit.getNormal(), incoming = ray.getDirection();
+            auto index_i = indexOfRefraction, index_t = material->getIndexOfRefraction();
+            if (shadeBack && realNormal.Dot3(incoming) > 0) { // intersection inside the object, reverse normal
+                realNormal.Scale(-1, -1, -1);
+                index_t = 1;
+            }
+            Vec3f refractiveDir;
+            auto hasRefraction = transmittedDirection(realNormal, incoming, index_i, index_t, refractiveDir);
+            if (hasRefraction) {
+                Ray refractiveRay = {hit.getIntersectionPoint(), refractiveDir};
+                Hit refractiveHit;
+                auto refractiveResult = traceRay(refractiveRay, 0, bounces + 1,
+                                                 weight * reflectiveColor.Length(), index_t, refractiveHit);
+                RayTree::AddTransmittedSegment(refractiveRay, 0, refractiveHit.getT());
+                color += refractiveResult * refractiveColor;
+            }
+        }
+    }
+    return color;
+}

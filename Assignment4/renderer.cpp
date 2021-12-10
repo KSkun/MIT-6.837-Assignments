@@ -8,6 +8,7 @@
 #include "group.h"
 #include "material.h"
 #include "light.h"
+#include "ray_tracer.h"
 
 void DepthRenderer::Render() {
     assert(image);
@@ -87,6 +88,20 @@ void DiffuseRenderer::Render() {
             }
             color += scene->getAmbientLight() * material->getDiffuseColor();
             image->SetPixel(i, j, color);
+        }
+    }
+}
+
+void RayTraceRenderer::Render() {
+    Renderer::Render(); // preparations
+
+    for (int i = 0; i < image->Width(); i++) {
+        for (int j = 0; j < image->Height(); j++) {
+            auto ray = camera->generateRay(Vec2f((float) i / image->Width(),
+                                                 (float) j / image->Height()));
+            auto tracer = new RayTracer(scene, maxBounces, cutoffWeight);
+            Hit hit;
+            image->SetPixel(i, j, tracer->traceRay(ray, camera->getTMin(), 0, 1, 1, hit));
         }
     }
 }

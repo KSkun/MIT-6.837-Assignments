@@ -71,4 +71,12 @@ public:
     void Render() override;
 };
 
+class RayTraceRenderer : public Renderer {
+public:
+    explicit RayTraceRenderer(Image *image = nullptr, SceneParser *scene = nullptr) :
+            Renderer(image, scene) {}
+
+    void Render() override;
+};
+
 #endif //ASSIGNMENT2_RENDERER_H
