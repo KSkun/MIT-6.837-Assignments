@@ -82,7 +82,6 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight, float
             auto reflectiveResult = traceRay(reflectiveRay, 0, bounces + 1,
                                              weight * reflectiveColor.Length(), indexOfRefraction, reflectiveHit);
             float reflectiveT = 1e10;
-
             if (reflectiveHit.getMaterial() != nullptr) reflectiveT = reflectiveHit.getT();
             RayTree::AddReflectedSegment(reflectiveRay, 0, reflectiveT);
             color += reflectiveColor * reflectiveResult;
@@ -94,7 +93,7 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight, float
             auto realNormal = hit.getNormal(), incoming = ray.getDirection();
             auto index_i = indexOfRefraction, index_t = material->getIndexOfRefraction();
             if (shadeBack && realNormal.Dot3(incoming) > 0) { // intersection inside the object, reverse normal
-                realNormal.Scale(-1, -1, -1);
+                realNormal.Negate();
                 index_t = 1;
             }
             Vec3f refractiveDir;
