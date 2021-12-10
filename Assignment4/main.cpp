@@ -24,7 +24,7 @@ char *depth_file = nullptr;
 void Render() {
     if (output_file) {
         auto colorImg = new Image(width, height);
-        auto colorRenderer = new DiffuseRenderer(colorImg, parser);
+        auto colorRenderer = new RayTraceRenderer(colorImg, parser);
         colorRenderer->Render();
         colorImg->SaveTGA(output_file);
     }
