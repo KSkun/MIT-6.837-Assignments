@@ -34,12 +34,13 @@ void Plane::paint() {
     Vec3f b1, b2;
     Vec3f::Cross3(b1, v, normal);
     Vec3f::Cross3(b2, normal, b1);
+    Vec3f oProjected = normal * d;
 
     // (-BIG, -BIG) to (BIG, BIG) in plane space
-    Vec3f p1 = BIG * b1 + BIG * b2,
-            p2 = -BIG * b1 + BIG * b2,
-            p3 = BIG * b1 - BIG * b2,
-            p4 = -BIG * b1 - BIG * b2;
+    Vec3f p1 = oProjected + BIG * b1 + BIG * b2,
+            p2 = oProjected - BIG * b1 + BIG * b2,
+            p3 = oProjected - BIG * b1 - BIG * b2,
+            p4 = oProjected + BIG * b1 - BIG * b2;
 
     material->glSetMaterial();
     glBegin(GL_QUADS);
