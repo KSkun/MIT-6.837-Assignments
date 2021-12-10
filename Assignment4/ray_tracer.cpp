@@ -45,8 +45,11 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight, float
     if (weight == 1) { // main segment
         RayTree::SetMainSegment(ray, tmin, hit.getT());
     }
+
+    // ambient
+    Vec3f color = scene->getAmbientLight() * hit.getMaterial()->getDiffuseColor();
+
     // local shading
-    Vec3f color = scene->getAmbientLight();
     for (int iLight = 0; iLight < scene->getNumLights(); iLight++) {
         // prepare light information
         auto light = scene->getLight(iLight);
