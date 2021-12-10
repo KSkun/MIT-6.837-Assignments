@@ -99,11 +99,13 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight, float
             Vec3f refractiveDir;
             auto hasRefraction = transmittedDirection(realNormal, incoming, index_i, index_t, refractiveDir);
             if (hasRefraction) {
-                Ray refractiveRay = {hit.getIntersectionPoint(), refractiveDir};
+                Ray refractiveRay = {hit.getIntersectionPoint() + ray.getDirection() * 0.001f, refractiveDir};
                 Hit refractiveHit;
                 auto refractiveResult = traceRay(refractiveRay, 0, bounces + 1,
                                                  weight * reflectiveColor.Length(), index_t, refractiveHit);
-                RayTree::AddTransmittedSegment(refractiveRay, 0, refractiveHit.getT());
+                float refractiveT = 1e10;
+                if (refractiveHit.getMaterial() != nullptr) refractiveT = refractiveHit.getT();
+                RayTree::AddTransmittedSegment(refractiveRay, 0, refractiveT);
                 color += refractiveResult * refractiveColor;
             }
         }
