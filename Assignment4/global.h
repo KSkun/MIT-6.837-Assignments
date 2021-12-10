@@ -15,11 +15,11 @@ extern bool shadows;
 extern int width;
 extern int height;
 extern int thetaSteps, phiSteps;
-extern int bounces;
+extern int maxBounces;
 
 extern float depthMin;
 extern float depthMax;
-extern float weight;
+extern float cutoffWeight;
 
 int fcmp(float f);
 

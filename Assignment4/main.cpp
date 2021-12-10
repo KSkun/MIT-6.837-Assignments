@@ -90,11 +90,11 @@ int main(int argc, char *argv[]) {
         } else if (!strcmp(argv[i], "-bounces")) {
             i++;
             assert(i < argc);
-            bounces = atoi(argv[i]);
+            maxBounces = atoi(argv[i]);
         } else if (!strcmp(argv[i], "-weight")) {
             i++;
             assert(i < argc);
-            weight = atof(argv[i]);
+            cutoffWeight = atof(argv[i]);
         } else {
             printf("whoops error with command line argument %d: '%s'\n", i, argv[i]);
             assert(0);

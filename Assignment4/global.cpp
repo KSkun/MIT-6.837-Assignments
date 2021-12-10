@@ -16,11 +16,11 @@ bool shadows = false;
 int width = 100;
 int height = 100;
 int thetaSteps = 100, phiSteps = 100;
-int bounces = 1;
+int maxBounces = 1;
 
 float depthMin = 0;
 float depthMax = 1;
-float weight = 0;
+float cutoffWeight = 0;
 
 int fcmp(float f) {
     if (std::fabs(f) < EPSILON) return 0;
