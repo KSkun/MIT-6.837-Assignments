@@ -17,12 +17,14 @@ Vec3f mirrorDirection(const Vec3f &normal, const Vec3f &incoming) {
 
 bool transmittedDirection(const Vec3f &normal, const Vec3f &incoming, float index_i, float index_t,
                           Vec3f &transmitted) {
+    auto revI = incoming;
+    revI.Negate();
     float index_r = index_i / index_t;
-    float nDotI = normal.Dot3(incoming);
+    float nDotI = normal.Dot3(revI);
     float inSqrt = 1 - index_r * index_r * (1 - nDotI * nDotI);
     if (inSqrt < 0) return false;
     float coN = index_r * nDotI - sqrt(inSqrt), coI = -index_r;
-    transmitted = coN * normal + coI * incoming;
+    transmitted = coN * normal + coI * revI;
     transmitted.Normalize();
     return true;
 }
