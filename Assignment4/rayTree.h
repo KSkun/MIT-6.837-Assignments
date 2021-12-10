@@ -2,6 +2,7 @@
 #define _RAY_TREE_H
 
 #include "ray.h"
+#include <windows.h>
 #include <GL/gl.h>
 
 // ====================================================================
