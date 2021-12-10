@@ -232,6 +232,7 @@ void GLCanvas::keyboard(unsigned char key, int i, int j) {
     fflush(stdout);
     if (renderFunction) renderFunction();
     printf("done.\n");
+          fflush(stdout);
     break;
   case 't':  case 'T': {
     // visualize the ray tree for the pixel at the current mouse position
