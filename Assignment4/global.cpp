@@ -6,7 +6,7 @@
 
 #include "global.h"
 
-const float EPSILON = 1e-6;
+const float EPSILON = 1e-12;
 
 bool shadeBack = false;
 bool gouraud = false;
