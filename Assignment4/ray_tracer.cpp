@@ -58,7 +58,7 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight, float
         light->getIllumination(hit.getIntersectionPoint(), dirToLight, lightColor, disToLight);
 
         // cast shadow ray and test if blocked
-        Ray lightRay = {hit.getIntersectionPoint() - ray.getDirection() * EPSILON, dirToLight};
+        Ray lightRay = {hit.getIntersectionPoint() - ray.getDirection() * 0.001f, dirToLight};
         Hit lightHit;
         if (shadows && group->intersect(lightRay, lightHit, 0) && fcmp(lightHit.getT() - disToLight) < 0) {
             RayTree::AddShadowSegment(lightRay, 0, lightHit.getT());
