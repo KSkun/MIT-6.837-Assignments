@@ -7,6 +7,7 @@
 
 extern const float EPSILON;
 
+extern bool shadeBack;
 extern bool gouraud;
 extern bool gui;
 extern bool shadows;

@@ -72,6 +72,8 @@ int main(int argc, char *argv[]) {
             i++;
             assert(i < argc);
             depth_file = argv[i];
+        } else if (!strcmp(argv[i], "-shade_back")) {
+            shadeBack = true;
         } else if (!strcmp(argv[i], "-gui")) {
             gui = true;
         } else if (!strcmp(argv[i], "-tessellation")) {
