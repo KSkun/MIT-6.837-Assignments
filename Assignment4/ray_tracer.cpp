@@ -55,13 +55,13 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight, float
         light->getIllumination(hit.getIntersectionPoint(), dirToLight, lightColor, disToLight);
 
         // cast shadow ray and test if blocked
-        Ray lightRay = {hit.getIntersectionPoint() + dirToLight * EPSILON, dirToLight};
+        Ray lightRay = {hit.getIntersectionPoint() - ray.getDirection() * EPSILON, dirToLight};
         Hit lightHit;
-        if (group->intersect(lightRay, lightHit, 0) && fcmp(lightHit.getT() - disToLight) < 0) {
-            RayTree::AddShadowSegment(ray, 0, lightHit.getT());
+        if (shadows && group->intersect(lightRay, lightHit, 0) && fcmp(lightHit.getT() - disToLight) < 0) {
+            RayTree::AddShadowSegment(lightRay, 0, lightHit.getT());
             continue;
         }
-        RayTree::AddShadowSegment(lightRay, 0, disToLight);
+        if (shadows) RayTree::AddShadowSegment(lightRay, 0, disToLight);
 
         color += hit.getMaterial()->Shade(ray, hit, dirToLight, lightColor);
     }
