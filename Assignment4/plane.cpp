@@ -8,7 +8,7 @@
 bool Plane::intersect(const Ray &r, Hit &h, float tMin) {
     auto rdDotN = r.getDirection().Dot3(normal);
     auto roDotN = r.getOrigin().Dot3(normal);
-    if (fcmp(rdDotN) == 0) { // Rd dot N == 0, Rd vertical to N
+    if (rdDotN == 0) { // Rd dot N == 0, Rd vertical to N
         if (fcmp(roDotN - d) == 0 && fcmp(tMin) <= 0) { // Ro dot N == 0 && 0 >= tMin, origin on plane
             h.set(0, material, normal, r);
             return true;
@@ -17,7 +17,9 @@ bool Plane::intersect(const Ray &r, Hit &h, float tMin) {
     }
     auto t = (d - roDotN) / rdDotN;
     if (fcmp(t - tMin) < 0) return false; // t < tMin, intersection behind camera
-    h.set(t, material, normal, r);
+    auto realNormal = normal;
+    if (rdDotN > 0) realNormal.Negate();
+    h.set(t, material, realNormal, r);
     return true;
 }
 
