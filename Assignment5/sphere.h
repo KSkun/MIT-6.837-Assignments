@@ -10,7 +10,11 @@
 class Sphere : public Object3D {
 public:
     Sphere(const Vec3f &center, float radius, Material *material) :
-            center(center), radius(radius), Object3D(material) {}
+            center(center), radius(radius), Object3D(material) {
+        // calculate bounding box
+        auto vecR = Vec3f(radius, radius, radius);
+        bbox = new BoundingBox(center - vecR, center + vecR);
+    }
 
     Sphere() : Sphere(Vec3f(), 0, nullptr) {}
 

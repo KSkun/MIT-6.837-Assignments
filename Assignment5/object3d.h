@@ -11,10 +11,11 @@
 #include "material.h"
 #include "ray.h"
 #include "hit.h"
+#include "boundingbox.h"
 
 class Object3D {
 public:
-    explicit Object3D(Material *material) : material(material) {}
+    explicit Object3D(Material *material) : material(material), bbox(nullptr) {}
 
     Object3D() : Object3D(nullptr) {}
 
@@ -22,8 +23,11 @@ public:
 
     virtual void paint() = 0;
 
+    BoundingBox *getBoundingBox() { return bbox; }
+
 protected:
     Material *material;
+    BoundingBox *bbox;
 };
 
 #endif //ASSIGNMENT1_OBJECT3D_H

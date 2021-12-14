@@ -8,6 +8,14 @@
 void Group::addObject(int index, Object3D *object) {
     assert(index < objectNum);
     objects[index] = object;
+
+    // update bounding box
+    auto objBBox = object->getBoundingBox();
+    if (bbox == nullptr) {
+        bbox = new BoundingBox(*objBBox);
+    } else if (objBBox != nullptr) {
+        bbox->Extend(objBBox);
+    }
 }
 
 bool Group::intersect(const Ray &r, Hit &h, float tMin) {
