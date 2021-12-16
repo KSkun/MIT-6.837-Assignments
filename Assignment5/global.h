@@ -11,11 +11,13 @@ extern bool shadeBack;
 extern bool gouraud;
 extern bool gui;
 extern bool shadows;
+extern bool visualizeGrid;
 
 extern int width;
 extern int height;
 extern int thetaSteps, phiSteps;
 extern int maxBounces;
+extern int gridNX, gridNY, gridNZ;
 
 extern float depthMin;
 extern float depthMax;

@@ -104,6 +104,18 @@ int main(int argc, char *argv[]) {
             i++;
             assert(i < argc);
             cutoffWeight = atof(argv[i]);
+        } else if (!strcmp(argv[i], "-grid")) {
+            i++;
+            assert(i < argc);
+            gridNX = atoi(argv[i]);
+            i++;
+            assert(i < argc);
+            gridNY = atoi(argv[i]);
+            i++;
+            assert(i < argc);
+            gridNZ = atoi(argv[i]);
+        } else if (!strcmp(argv[i], "-visualize_grid")) {
+            visualizeGrid = true;
         } else {
             printf("whoops error with command line argument %d: '%s'\n", i, argv[i]);
             assert(0);

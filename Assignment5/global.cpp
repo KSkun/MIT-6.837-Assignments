@@ -12,11 +12,13 @@ bool shadeBack = false;
 bool gouraud = false;
 bool gui = false;
 bool shadows = false;
+bool visualizeGrid = false;
 
 int width = 100;
 int height = 100;
 int thetaSteps = 100, phiSteps = 100;
 int maxBounces = 1;
+int gridNX, gridNY, gridNZ;
 
 float depthMin = 0;
 float depthMax = 1;
