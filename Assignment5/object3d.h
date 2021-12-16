@@ -15,9 +15,14 @@
 
 class Object3D {
 public:
-    explicit Object3D(Material *material) : material(material), bbox(nullptr) {}
+    explicit Object3D(Material *material, BoundingBox *bbox = nullptr) :
+            material(material), bbox(bbox) {}
 
     Object3D() : Object3D(nullptr) {}
+
+    virtual ~Object3D() {
+        delete bbox;
+    }
 
     virtual bool intersect(const Ray &r, Hit &h, float tMin) = 0;
 
