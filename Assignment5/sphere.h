@@ -6,6 +6,7 @@
 #define ASSIGNMENT1_SPHERE_H
 
 #include "object3d.h"
+#include "grid.h"
 
 class Sphere : public Object3D {
 public:
@@ -25,6 +26,8 @@ public:
     bool intersect(const Ray &r, Hit &h, float tMin) override;
 
     void paint() override;
+
+    void insertIntoGrid(Grid *g, Matrix *m) override;
 
 protected:
     Vec3f getPoint(float phi, float theta);

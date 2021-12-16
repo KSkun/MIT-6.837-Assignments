@@ -30,6 +30,8 @@ public:
 
     BoundingBox *getBoundingBox() { return bbox; }
 
+    virtual void insertIntoGrid(Grid *g, Matrix *m) {}
+
 protected:
     Material *material;
     BoundingBox *bbox;

@@ -3,6 +3,7 @@
 //
 
 #define _USE_MATH_DEFINES
+
 #include <math.h>
 
 #include "sphere.h"
@@ -73,10 +74,14 @@ void Sphere::paint() {
                 Vec3f::Cross3(n2, p4 - p2, p3 - p2);
                 n2.Normalize();
             } else {
-                n1 = p1 - center; n1.Normalize();
-                n2 = p2 - center; n2.Normalize();
-                n3 = p3 - center; n3.Normalize();
-                n4 = p4 - center; n4.Normalize();
+                n1 = p1 - center;
+                n1.Normalize();
+                n2 = p2 - center;
+                n2.Normalize();
+                n3 = p3 - center;
+                n3.Normalize();
+                n4 = p4 - center;
+                n4.Normalize();
             }
 
             // send gl vertex commands
@@ -114,4 +119,27 @@ void Sphere::paint() {
         }
     }
     glEnd();
+}
+
+void Sphere::insertIntoGrid(Grid *g, Matrix *m) {
+    auto gridBBox = g->getBoundingBox();
+    auto gridLo = gridBBox->getMin(), gridHi = gridBBox->getMax();
+    auto[gridNX, gridNY, gridNZ] = g->getSize();
+    auto gridDX = (gridHi.x() - gridLo.x()) / gridNX,
+            gridDY = (gridHi.y() - gridLo.y()) / gridNY,
+            gridDZ = (gridHi.z() - gridLo.z()) / gridNZ;
+    auto gridDiag = sqrt((gridHi.x() - gridLo.x()) * (gridHi.x() - gridLo.x()) +
+                         (gridHi.y() - gridLo.y()) * (gridHi.y() - gridLo.y()) +
+                         (gridHi.z() - gridLo.z()) * (gridHi.z() - gridLo.z()));
+    for (int i = 0; i < gridNX; i++) {
+        for (int j = 0; j < gridNY; j++) {
+            for (int k = 0; k < gridNZ; k++) {
+                auto voxCen = gridLo + Vec3f(gridDX * (i + 0.5f),
+                                             gridDY * (j + 0.5f), gridDZ * (k + 0.5f));
+                if ((voxCen - center).Length() <= radius + gridDiag / 2.0f) {
+                    g->setOpaqueness(i, j, k, true);
+                }
+            }
+        }
+    }
 }
