@@ -26,6 +26,12 @@ public:
 
     void paint() override;
 
+    void insertIntoGrid(Grid *g, Matrix *m) override {
+        for (int i = 0; i < objectNum; i++) {
+            objects[i]->insertIntoGrid(g, m);
+        }
+    }
+
 private:
     int objectNum;
     Object3D **objects;

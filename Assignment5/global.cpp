@@ -18,7 +18,7 @@ int width = 100;
 int height = 100;
 int thetaSteps = 100, phiSteps = 100;
 int maxBounces = 1;
-int gridNX, gridNY, gridNZ;
+int gridNX = -1, gridNY = -1, gridNZ = -1;
 
 float depthMin = 0;
 float depthMax = 1;

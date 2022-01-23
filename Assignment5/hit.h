@@ -45,7 +45,7 @@ private:
 
 };
 
-inline ostream &operator<<(ostream &os, const Hit &h) {
+inline std::ostream &operator<<(std::ostream &os, const Hit &h) {
   os << "Hit <" <<h.getT()<<", "<<h.getNormal()<<">";
   return os;
 }
