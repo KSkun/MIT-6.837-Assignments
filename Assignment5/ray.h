@@ -2,7 +2,6 @@
 #define _RAY_H
 
 #include <iostream>
-using namespace std;
 
 #include "vectors.h"
 
@@ -35,7 +34,7 @@ private:
   Vec3f direction;
 };
 
-inline ostream &operator<<(ostream &os, const Ray &r) {
+inline std::ostream &operator<<(std::ostream &os, const Ray &r) {
   os << "Ray <o:" <<r.getOrigin()<<", d:"<<r.getDirection()<<">";
   return os;
 }

@@ -7,7 +7,6 @@
 //
 
 #include <iostream>
-using namespace std;
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -515,7 +514,7 @@ private:
   
 };
 
-inline ostream &operator<<(ostream &os, const Vec3f &v) {
+inline std::ostream &operator<<(std::ostream &os, const Vec3f &v) {
   os << "Vec3f <" <<v.x()<<", "<<v.y()<<", "<<v.z()<<">";
   return os;
 }

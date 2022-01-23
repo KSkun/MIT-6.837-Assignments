@@ -1,4 +1,5 @@
 #include "rayTree.h"
+#include <windows.h>
 #include <GL/gl.h>
 
 // ====================================================================
