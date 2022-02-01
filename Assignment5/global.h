@@ -25,4 +25,7 @@ extern float cutoffWeight;
 
 int fcmp(float f);
 
+#undef min
+#undef max
+
 #endif //ASSIGNMENT2_GLOBAL_H
