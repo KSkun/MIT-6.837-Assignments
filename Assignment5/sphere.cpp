@@ -123,8 +123,7 @@ void Sphere::paint() {
 }
 
 void Sphere::insertIntoGrid(Grid *g, Matrix *m) {
-    auto bbox = g->getBoundingBox();
-    auto bMin = bbox->getMin(), bMax = bbox->getMax();
+    auto bMin = g->getMin(), bMax = g->getMax();
     auto[nx, ny, nz] = g->getSize();
     auto[lx, ly, lz] = g->getVoxelSize();
     auto diagHalf = sqrt(lx * lx + ly * ly + lz * lz) / 2.0f;

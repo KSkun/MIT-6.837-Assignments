@@ -115,7 +115,7 @@ void GLCanvas::display(void)
   // ========================================================
   // DRAW AXES
   // remove this line once you've started rendering primitive objects
-  //drawAxes(); 
+  //drawAxes();
   // ========================================================
 
   glEnable(GL_LIGHTING);
@@ -148,26 +148,26 @@ void GLCanvas::display(void)
 
 #else
 
-    // OPTIONAL: 3 pass rendering to fix the specular highlight 
+    // OPTIONAL: 3 pass rendering to fix the specular highlight
     // artifact for small specular exponents (wide specular lobe)
-    
+
     // First pass, draw the specular highlights
     SPECULAR_FIX_WHICH_PASS = 0;
     scene->getGroup()->paint();
-    
+
     glDepthFunc(GL_EQUAL);
     glEnable(GL_BLEND);
-    
+
     // Second pass, multiply specular highlights by normal dot light
     SPECULAR_FIX_WHICH_PASS = 1;
     glBlendFunc(GL_DST_COLOR, GL_ZERO);
     scene->getGroup()->paint();
-    
+
     // Third pass, add diffuse & ambient components
     SPECULAR_FIX_WHICH_PASS = 2;
     glBlendFunc(GL_ONE, GL_ONE);
     scene->getGroup()->paint();
-    
+
     glDepthFunc(GL_LESS);
     glDisable(GL_BLEND);
 
@@ -195,7 +195,7 @@ void GLCanvas::reshape(int w, int h) {
   // Set the camera parameters to reflect the changes
   scene->getCamera()->glInit(w, h);
 
-  // OPTIONAL: If you'd also like to resize your rendering, 
+  // OPTIONAL: If you'd also like to resize your rendering,
   // add code to do that here
 }
 
@@ -249,17 +249,18 @@ void GLCanvas::motion(int x, int y) {
 void GLCanvas::keyboard(unsigned char key, int i, int j) {
   switch (key) {
   case 'r':  case 'R':
-    printf("Rendering scene... "); 
+    printf("Rendering scene... ");
     fflush(stdout);
     if (renderFunction) renderFunction();
     printf("done.\n");
+    fflush(stdout);
     break;
   case 't':  case 'T': {
     // visualize the ray tree for the pixel at the current mouse position
     int width = glutGet(GLUT_WINDOW_WIDTH);
     int height = glutGet(GLUT_WINDOW_HEIGHT);
     // flip up & down
-    j = height-j; 
+    j = height-j;
     int max = (width > height) ? width : height;
     // map the pixel coordinates: (0,0) -> (width-1,height-1);
     //      to screenspace: (0.0,0.0) -> (1.0,1.0);
@@ -292,9 +293,9 @@ void GLCanvas::keyboard(unsigned char key, int i, int j) {
 // by calling 'exit(0)'
 // ========================================================
 
-void GLCanvas::initialize(SceneParser *_scene, 
-			  void (*_renderFunction)(void), 
-			  void (*_traceRayFunction)(float,float), 
+void GLCanvas::initialize(SceneParser *_scene,
+			  void (*_renderFunction)(void),
+			  void (*_traceRayFunction)(float,float),
 			  Grid *_grid, bool _visualize_grid) {
   scene = _scene;
   grid = _grid;
@@ -309,7 +310,7 @@ void GLCanvas::initialize(SceneParser *_scene,
   // Set window parameters
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB);
   glEnable(GL_DEPTH_TEST);
-  // OPTIONAL: If you'd like to set the window size from 
+  // OPTIONAL: If you'd like to set the window size from
   // the command line, do that here
   glutInitWindowSize(400,400);
   glutInitWindowPosition(100,100);

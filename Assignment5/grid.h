@@ -27,7 +27,7 @@ public:
 class Grid : public Object3D {
 public:
     Grid(BoundingBox *bb, int nx, int ny, int nz) :
-            Object3D(nullptr, bb), nx(nx), ny(ny), nz(nz) {
+            Object3D(nullptr, new BoundingBox(*bb)), nx(nx), ny(ny), nz(nz) {
         assert(bb != nullptr);
 
         auto bMax = bb->getMax(), bMin = bb->getMin();
@@ -43,7 +43,6 @@ public:
     ~Grid() override {
 //        delete[] isOpaque;
         delete[] objects;
-        Object3D::~Object3D();
     }
 
     void insertObject(int x, int y, int z, Object3D *obj) {
@@ -73,6 +72,14 @@ public:
 
     [[nodiscard]] std::tuple<float, float, float> getVoxelSize() const {
         return {lx, ly, lz};
+    }
+
+    [[nodiscard]] Vec3f getMin() const {
+        return bbox->getMin();
+    }
+
+    [[nodiscard]] Vec3f getMax() const {
+        return bbox->getMax();
     }
 
     bool intersect(const Ray &r, Hit &h, float tMin) override;

@@ -24,6 +24,10 @@ public:
         }
     }
 
+    ~RayTracer() {
+        delete grid;
+    }
+
     Vec3f traceRay(Ray &ray, float tmin, int bounces, float weight, float indexOfRefraction, Hit &hit) const;
 
     Grid *getGrid() { return grid; }
