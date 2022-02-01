@@ -8,6 +8,7 @@
 
 #include "sphere.h"
 #include "global.h"
+#include "matrix.h"
 
 bool Sphere::intersect(const Ray &r, Hit &h, float tMin) {
     auto vecOriCen = center - r.getOrigin();
@@ -122,22 +123,23 @@ void Sphere::paint() {
 }
 
 void Sphere::insertIntoGrid(Grid *g, Matrix *m) {
-    auto gridBBox = g->getBoundingBox();
-    auto gridLo = gridBBox->getMin(), gridHi = gridBBox->getMax();
-    auto[gridNX, gridNY, gridNZ] = g->getSize();
-    auto gridDX = (gridHi.x() - gridLo.x()) / gridNX,
-            gridDY = (gridHi.y() - gridLo.y()) / gridNY,
-            gridDZ = (gridHi.z() - gridLo.z()) / gridNZ;
-    auto gridDiag = sqrt((gridHi.x() - gridLo.x()) * (gridHi.x() - gridLo.x()) +
-                         (gridHi.y() - gridLo.y()) * (gridHi.y() - gridLo.y()) +
-                         (gridHi.z() - gridLo.z()) * (gridHi.z() - gridLo.z()));
-    for (int i = 0; i < gridNX; i++) {
-        for (int j = 0; j < gridNY; j++) {
-            for (int k = 0; k < gridNZ; k++) {
-                auto voxCen = gridLo + Vec3f(gridDX * (i + 0.5f),
-                                             gridDY * (j + 0.5f), gridDZ * (k + 0.5f));
-                if ((voxCen - center).Length() <= radius + gridDiag / 2.0f) {
-                    g->setOpaqueness(i, j, k, true);
+    auto bbox = g->getBoundingBox();
+    auto bMin = bbox->getMin(), bMax = bbox->getMax();
+    auto[nx, ny, nz] = g->getSize();
+    auto dx = (bMax.x() - bMin.x()) / nx,
+            dy = (bMax.y() - bMin.y()) / ny,
+            dz = (bMax.z() - bMin.z()) / nz;
+    auto diagHalf = sqrt((bMax.x() - bMin.x()) * (bMax.x() - bMin.x()) +
+                         (bMax.y() - bMin.y()) * (bMax.y() - bMin.y()) +
+                         (bMax.z() - bMin.z()) * (bMax.z() - bMin.z())) / 2.0f;
+    for (int i = 0; i < nx; i++) {
+        for (int j = 0; j < ny; j++) {
+            for (int k = 0; k < nz; k++) {
+                auto voxCen = bMin + Vec3f(
+                        dx * (i + 0.5f), dy * (j + 0.5f), dz * (k + 0.5f));
+                if (m != nullptr) m->Transform(voxCen); // point inside transformation
+                if ((voxCen - center).Length() <= radius + diagHalf) {
+                    g->insertObject(i, j, k, this);
                 }
             }
         }

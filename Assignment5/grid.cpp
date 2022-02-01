@@ -2,6 +2,8 @@
 // Created by kskun on 2021/12/14.
 //
 
+#include <algorithm>
+
 #include "grid.h"
 #include "global.h"
 #include "rayTree.h"
@@ -11,6 +13,9 @@ void Grid::paint() {
     for (int i = 0; i < nx; i++) {
         for (int j = 0; j < ny; j++) {
             for (int k = 0; k < nz; k++) {
+                // skip empty voxels
+                if (getObjects(i, j, k)->getNumObjects() == 0) continue;
+
                 auto p1 = bMin + Vec3f(i * lx, j * ly, k * lz),
                         p2 = bMin + Vec3f((i + 1) * lx, j * ly, k * lz),
                         p3 = bMin + Vec3f((i + 1) * lx, (j + 1) * ly, k * lz),
@@ -125,6 +130,7 @@ void Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tMin) const 
 }
 
 void MarchingInfo::nextCell() {
+    // 3DDDA
     assert(next);
     tMin = std::min({tNextX, tNextY, tNextZ});
 
@@ -181,7 +187,7 @@ bool Grid::intersect(const Ray &r, Hit &h, float tMin) {
     initializeRayMarch(mi, r, tMin);
 
     auto bMin = bbox->getMin();
-    while (mi.next && !getOpaqueness(mi.i, mi.j, mi.k)) {
+    while (mi.next && getObjects(mi.i, mi.j, mi.k)->getNumObjects() == 0) {
         auto p = r.pointAtParameter(mi.tMin);
         Vec3f p1, p2, p3, p4, n;
         hitFace(bbox, p, mi, p1, p2, p3, p4, n);

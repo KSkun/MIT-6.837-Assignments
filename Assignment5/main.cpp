@@ -16,6 +16,7 @@
 
 SceneParser *parser;
 RayTracer *tracer;
+Grid *grid;
 char *input_file = nullptr;
 char *output_file = nullptr;
 char *normals_file = nullptr;
@@ -127,7 +128,8 @@ int main(int argc, char *argv[]) {
     if (gui) {
         glutInit(&argc, argv);
         auto *glCanvas = new GLCanvas;
-        glCanvas->initialize(parser, Render, TraceRay);
+        glCanvas->initialize(parser, Render, TraceRay,
+                             tracer->getGrid(), visualizeGrid);
     } else {
         Render();
     }

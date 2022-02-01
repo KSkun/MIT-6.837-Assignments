@@ -52,6 +52,8 @@ public:
 
     void paint() override;
 
+    void insertIntoGrid(Grid *g, Matrix *m) override;
+
 protected:
     static void TransformPosition(Vec3f &dst, const Vec3f &src, const Matrix &mat);
 

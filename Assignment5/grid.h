@@ -8,6 +8,7 @@
 #include <tuple>
 
 #include "object3d.h"
+#include "object3dvector.h"
 
 
 class MarchingInfo {
@@ -34,25 +35,27 @@ public:
         ly = (float) (bMax.y() - bMin.y()) / ny;
         lz = (float) (bMax.z() - bMin.z()) / nz;
 
-        isOpaque = new bool[nx * ny * nz];
-        std::fill(isOpaque, isOpaque + nx * ny * nz, false);
+//        isOpaque = new bool[nx * ny * nz];
+//        std::fill(isOpaque, isOpaque + nx * ny * nz, false);
+        objects = new Object3DVector[nx * ny * nz];
     }
 
     ~Grid() override {
-        delete[] isOpaque;
+//        delete[] isOpaque;
+        delete[] objects;
         Object3D::~Object3D();
     }
 
-    void setOpaqueness(int x, int y, int z, bool opaqueness) {
+    void insertObject(int x, int y, int z, Object3D *obj) {
         assert(x >= 0 && x < nx);
         assert(y >= 0 && y < ny);
         assert(z >= 0 && z < nz);
         assert(x * ny * nz + y * nz + z < nx * ny * nz);
-        isOpaque[x * ny * nz + y * nz + z] = opaqueness;
+        objects[x * ny * nz + y * nz + z].addObject(obj);
     }
 
-    [[nodiscard]] bool getOpaqueness(int x, int y, int z) const {
-        return isOpaque[x * ny * nz + y * nz + z];
+    [[nodiscard]] Object3DVector *getObjects(int x, int y, int z) const {
+        return &objects[x * ny * nz + y * nz + z];
     }
 
     [[nodiscard]] std::tuple<int, int, int> getSize() const {
@@ -68,7 +71,8 @@ public:
 protected:
     int nx, ny, nz;
     float lx, ly, lz;
-    bool *isOpaque;
+//    bool *isOpaque;
+    Object3DVector *objects;
 
     void hitFace(const BoundingBox *bbox, const Vec3f &inter, const MarchingInfo &mi,
                  Vec3f &p1, Vec3f &p2, Vec3f &p3, Vec3f &p4, Vec3f &n) const;

@@ -26,6 +26,8 @@ public:
 
     Vec3f traceRay(Ray &ray, float tmin, int bounces, float weight, float indexOfRefraction, Hit &hit) const;
 
+    Grid *getGrid() { return grid; }
+
 protected:
     SceneParser *scene;
     Group *group;

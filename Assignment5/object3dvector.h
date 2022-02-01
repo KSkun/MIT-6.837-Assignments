@@ -23,7 +23,7 @@ public:
   Object3DVector() {
     num_objects = 0;
     size = 10;
-    objects = new (Object3D*)[size];
+    objects = new Object3D*[size];
     for (int i = 0; i < size; i++)
       objects[i] = NULL;
   }
@@ -48,7 +48,7 @@ public:
     if (size == num_objects) {
       // double the size of the array and copy the pointers
       int new_size = size * 2;
-      Object3D **new_objects = new (Object3D*)[new_size];
+      Object3D **new_objects = new Object3D*[new_size];
       int i;
       for (i = 0; i < size; i++) {
 	new_objects[i] = objects[i];
