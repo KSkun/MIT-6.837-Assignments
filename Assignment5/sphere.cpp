@@ -126,17 +126,13 @@ void Sphere::insertIntoGrid(Grid *g, Matrix *m) {
     auto bbox = g->getBoundingBox();
     auto bMin = bbox->getMin(), bMax = bbox->getMax();
     auto[nx, ny, nz] = g->getSize();
-    auto dx = (bMax.x() - bMin.x()) / nx,
-            dy = (bMax.y() - bMin.y()) / ny,
-            dz = (bMax.z() - bMin.z()) / nz;
-    auto diagHalf = sqrt((bMax.x() - bMin.x()) * (bMax.x() - bMin.x()) +
-                         (bMax.y() - bMin.y()) * (bMax.y() - bMin.y()) +
-                         (bMax.z() - bMin.z()) * (bMax.z() - bMin.z())) / 2.0f;
+    auto[lx, ly, lz] = g->getVoxelSize();
+    auto diagHalf = sqrt(lx * lx + ly * ly + lz * lz) / 2.0f;
     for (int i = 0; i < nx; i++) {
         for (int j = 0; j < ny; j++) {
             for (int k = 0; k < nz; k++) {
                 auto voxCen = bMin + Vec3f(
-                        dx * (i + 0.5f), dy * (j + 0.5f), dz * (k + 0.5f));
+                        lx * (i + 0.5f), ly * (j + 0.5f), lz * (k + 0.5f));
                 if (m != nullptr) m->Transform(voxCen); // point inside transformation
                 if ((voxCen - center).Length() <= radius + diagHalf) {
                     g->insertObject(i, j, k, this);

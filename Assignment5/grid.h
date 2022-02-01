@@ -50,16 +50,29 @@ public:
         assert(x >= 0 && x < nx);
         assert(y >= 0 && y < ny);
         assert(z >= 0 && z < nz);
-        assert(x * ny * nz + y * nz + z < nx * ny * nz);
         objects[x * ny * nz + y * nz + z].addObject(obj);
     }
 
     [[nodiscard]] Object3DVector *getObjects(int x, int y, int z) const {
+        assert(x >= 0 && x < nx);
+        assert(y >= 0 && y < ny);
+        assert(z >= 0 && z < nz);
         return &objects[x * ny * nz + y * nz + z];
+    }
+
+    [[nodiscard]] bool occupied(int x, int y, int z) const {
+        assert(x >= 0 && x < nx);
+        assert(y >= 0 && y < ny);
+        assert(z >= 0 && z < nz);
+        return objects[x * ny * nz + y * nz + z].getNumObjects() > 0;
     }
 
     [[nodiscard]] std::tuple<int, int, int> getSize() const {
         return {nx, ny, nz};
+    }
+
+    [[nodiscard]] std::tuple<float, float, float> getVoxelSize() const {
+        return {lx, ly, lz};
     }
 
     bool intersect(const Ray &r, Hit &h, float tMin) override;
