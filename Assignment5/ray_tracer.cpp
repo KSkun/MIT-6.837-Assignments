@@ -32,7 +32,10 @@ bool transmittedDirection(const Vec3f &normal, const Vec3f &incoming, float inde
 Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight, float indexOfRefraction, Hit &hit) const {
     // stop conditions
     // no intersection
-    if (!group->intersect(ray, hit, tmin)) {
+//    if (!group->intersect(ray, hit, tmin)) {
+//        return scene->getBackgroundColor();
+//    }
+    if (!grid->intersect(ray, hit, tmin)) {
         return scene->getBackgroundColor();
     }
     // too many bounces

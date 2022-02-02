@@ -6,23 +6,14 @@
 #define ASSIGNMENT5_GRID_H
 
 #include <tuple>
+#include <utility>
+#include <algorithm>
+#include <array>
 
 #include "object3d.h"
 #include "object3dvector.h"
 
-
-class MarchingInfo {
-public:
-    float tMin;
-    int i, j, k;
-    float tNextX, tNextY, tNextZ;
-    float dTX, dTY, dTZ;
-    int signX, signY, signZ;
-    bool next;
-    const Grid *grid;
-
-    void nextCell();
-};
+class MarchingInfo;
 
 class Grid : public Object3D {
 public:
@@ -66,6 +57,11 @@ public:
         return objects[x * ny * nz + y * nz + z].getNumObjects() > 0;
     }
 
+    [[nodiscard]] bool occupied(const std::tuple<int, int, int> &index) const {
+        auto[x, y, z] = index;
+        return occupied(x, y, z);
+    }
+
     [[nodiscard]] std::tuple<int, int, int> getSize() const {
         return {nx, ny, nz};
     }
@@ -86,7 +82,7 @@ public:
 
     void paint() override;
 
-    void initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin) const;
+    int initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin) const;
 
 protected:
     int nx, ny, nz;
@@ -94,8 +90,21 @@ protected:
 //    bool *isOpaque;
     Object3DVector *objects;
 
-    void hitFace(const BoundingBox *bbox, const Vec3f &inter, const MarchingInfo &mi,
+    void hitFace(const BoundingBox *bbox, const Vec3f &inter, const MarchingInfo &mi, const int ret,
                  Vec3f &p1, Vec3f &p2, Vec3f &p3, Vec3f &p4, Vec3f &n) const;
+};
+
+class MarchingInfo {
+public:
+    float tMin;
+    int i, j, k;
+    float tNextX, tNextY, tNextZ;
+    float dTX, dTY, dTZ;
+    int signX, signY, signZ;
+    bool valid;
+    const Grid *grid;
+
+    int nextCell();
 };
 
 

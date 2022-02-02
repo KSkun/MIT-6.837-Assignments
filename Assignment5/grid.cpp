@@ -78,7 +78,7 @@ void Grid::paint() {
     }
 }
 
-void Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tMin) const {
+int Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tMin) const {
     mi.grid = this;
 
     const auto &Rd = r.getDirection(), &Ro = r.getOrigin(),
@@ -87,40 +87,48 @@ void Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tMin) const 
     // parallel no intersection
     for (int i = 0; i < 3; i++) {
         if (Rd[i] == 0 && (Ro[i] < pMin[i] || Ro[i] > pMax[i])) {
-            mi.next = false;
-            return;
+            mi.valid = false;
+            return -1;
         }
     }
 
     // calculate tNear & tFar
     float tNear, tFar;
+    int dNear;
     for (int i = 0; i < 3; i++) {
         float t1 = (pMin[i] - Ro[i]) / Rd[i],
                 t2 = (pMax[i] - Ro[i]) / Rd[i];
         if (t1 > t2) std::swap(t1, t2);
-        if (i == 0 || t1 > tNear) tNear = t1;
-        if (i == 0 || t2 < tFar) tFar = t2;
+        if (i == 0 || t1 > tNear) {
+            tNear = t1;
+            dNear = i;
+        }
+        if (i == 0 || t2 < tFar) {
+            tFar = t2;
+        }
     }
     // miss bounding box
     if (tNear > tFar || tFar < tMin) {
-        mi.next = false;
-        return;
+        mi.valid = false;
+        return -1;
     }
 
     // intersect with bounding box
-    mi.next = true;
+    mi.valid = true;
 
     mi.dTX = std::abs(lx / Rd.x());
     mi.dTY = std::abs(ly / Rd.y());
     mi.dTZ = std::abs(lz / Rd.z());
 
-    mi.signX = Rd.x() < 0 ? -1 : (Rd.x() > 0 ? 1 : 0);
-    mi.signY = Rd.y() < 0 ? -1 : (Rd.y() > 0 ? 1 : 0);
-    mi.signZ = Rd.z() < 0 ? -1 : (Rd.z() > 0 ? 1 : 0);
+    mi.signX = Rd.x() < 0 ? -1 : 1;
+    mi.signY = Rd.y() < 0 ? -1 : 1;
+    mi.signZ = Rd.z() < 0 ? -1 : 1;
 
+    int ret = -1;
     if (tNear > tMin) {
         // origin outside grid
         mi.tMin = tNear;
+        ret = dNear;
     } else {
         // origin inside grid
         mi.tMin = tMin;
@@ -128,61 +136,72 @@ void Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tMin) const 
 
     // grid index
     auto p = r.pointAtParameter(mi.tMin),
-            pRelative = p - pMin;
-    mi.i = pRelative.x() / lx;
-    mi.j = pRelative.y() / ly;
-    mi.k = pRelative.z() / lz;
+            pRelative = p - pMin + Vec3f(EPSILON, EPSILON, EPSILON);
+    mi.i = std::min((int) (pRelative.x() / lx), nx - 1);
+    mi.j = std::min((int) (pRelative.y() / ly), ny - 1);
+    mi.k = std::min((int) (pRelative.z() / lz), nz - 1);
 
     // next grid index
-    mi.tNextX = ((mi.i + mi.signX) * lx - pRelative.x()) / Rd.x() + mi.tMin;
-    mi.tNextY = ((mi.j + mi.signY) * ly - pRelative.y()) / Rd.y() + mi.tMin;
-    mi.tNextZ = ((mi.k + mi.signZ) * lz - pRelative.z()) / Rd.z() + mi.tMin;
+    mi.tNextX = ((mi.i + (mi.signX < 0 ? 0 : 1)) * lx + pMin.x() - Ro.x()) / Rd.x();
+    mi.tNextY = ((mi.j + (mi.signY < 0 ? 0 : 1)) * ly + pMin.y() - Ro.y()) / Rd.y();
+    mi.tNextZ = ((mi.k + (mi.signZ < 0 ? 0 : 1)) * lz + pMin.z() - Ro.z()) / Rd.z();
+    return ret;
 }
 
-void MarchingInfo::nextCell() {
+int MarchingInfo::nextCell() {
+    int ret;
     // 3DDDA
-    assert(next);
+    assert(valid);
     tMin = std::min({tNextX, tNextY, tNextZ});
 
     if (tMin == tNextX) {
-        tNextX += dTX * signX;
+        tNextX += dTX;
         i += signX;
-    }
-    if (tMin == tNextY) {
-        tNextY += dTY * signY;
+        ret = 0;
+    } else if (tMin == tNextY) {
+        tNextY += dTY;
         j += signY;
-    }
-    if (tMin == tNextZ) {
-        tNextZ += dTZ * signZ;
+        ret = 1;
+    } else if (tMin == tNextZ) {
+        tNextZ += dTZ;
         k += signZ;
+        ret = 2;
+    } else {
+        assert(false);
+        ret = -1;
     }
 
     auto[nx, ny, nz] = grid->getSize();
-    if ((i < 0 || i >= nx) && (j < 0 || j >= ny) && (k < 0 || k >= nz)) {
-        next = false;
+    if ((i < 0 || i >= nx) || (j < 0 || j >= ny) || (k < 0 || k >= nz)) {
+        valid = false;
     }
+    return ret;
 }
 
-void Grid::hitFace(const BoundingBox *bbox, const Vec3f &inter, const MarchingInfo &mi,
+void Grid::hitFace(const BoundingBox *bbox, const Vec3f &inter, const MarchingInfo &mi, const int ret,
                    Vec3f &p1, Vec3f &p2, Vec3f &p3, Vec3f &p4, Vec3f &n) const {
     auto p = inter - bbox->getMin();
-    if (fcmp(p.x() - lx * mi.i) == 0) {
-        p1 = bbox->getMin() + Vec3f(lx * mi.i, ly * mi.j, lz * mi.k);
-        p2 = bbox->getMin() + Vec3f(lx * mi.i, (ly + 1) * mi.j, lz * mi.k);
-        p3 = bbox->getMin() + Vec3f(lx * mi.i, ly * mi.j, (lz + 1) * mi.k);
-        p4 = bbox->getMin() + Vec3f(lx * mi.i, (ly + 1) * mi.j, (lz + 1) * mi.k);
+    auto[i, j, k] = std::array{mi.i, mi.j, mi.k};
+    if (ret == 0) {
+        if (mi.signX < 0) i++;
+        p1 = bbox->getMin() + Vec3f(lx * i, ly * j, lz * k);
+        p2 = bbox->getMin() + Vec3f(lx * i, ly * (j + 1), lz * k);
+        p3 = bbox->getMin() + Vec3f(lx * i, ly * j, lz * (k + 1));
+        p4 = bbox->getMin() + Vec3f(lx * i, ly * (j + 1), lz * (k + 1));
         n.Set(1, 0, 0);
-    } else if (fcmp(p.y() - ly * mi.j) == 0) {
-        p1 = bbox->getMin() + Vec3f(lx * mi.i, ly * mi.j, lz * mi.k);
-        p2 = bbox->getMin() + Vec3f((lx + 1) * mi.i, ly * mi.j, lz * mi.k);
-        p3 = bbox->getMin() + Vec3f(lx * mi.i, ly * mi.j, (lz + 1) * mi.k);
-        p4 = bbox->getMin() + Vec3f((lx + 1) * mi.i, ly * mi.j, (lz + 1) * mi.k);
+    } else if (ret == 1) {
+        if (mi.signY < 0) j++;
+        p1 = bbox->getMin() + Vec3f(lx * i, ly * j, lz * k);
+        p2 = bbox->getMin() + Vec3f(lx * (i + 1), ly * j, lz * k);
+        p3 = bbox->getMin() + Vec3f(lx * i, ly * j, lz * (k + 1));
+        p4 = bbox->getMin() + Vec3f(lx * (i + 1), ly * j, lz * (k + 1));
         n.Set(0, 1, 0);
-    } else if (fcmp(p.z() - lz * mi.k) == 0) {
-        p1 = bbox->getMin() + Vec3f(lx * mi.i, ly * mi.j, lz * mi.k);
-        p2 = bbox->getMin() + Vec3f((lx + 1) * mi.i, ly * mi.j, lz * mi.k);
-        p3 = bbox->getMin() + Vec3f(lx * mi.i, (ly + 1) * mi.j, lz * mi.k);
-        p4 = bbox->getMin() + Vec3f((lx + 1) * mi.i, (ly + 1) * mi.j, lz * mi.k);
+    } else if (ret == 2) {
+        if (mi.signZ < 0) k++;
+        p1 = bbox->getMin() + Vec3f(lx * i, ly * j, lz * k);
+        p2 = bbox->getMin() + Vec3f(lx * (i + 1), ly * j, lz * k);
+        p3 = bbox->getMin() + Vec3f(lx * i, ly * (j + 1), lz * k);
+        p4 = bbox->getMin() + Vec3f(lx * (i + 1), ly * (j + 1), lz * k);
         n.Set(0, 0, 1);
     } else {
         assert(false);
@@ -194,22 +213,23 @@ bool Grid::intersect(const Ray &r, Hit &h, float tMin) {
             {1, 1, 1}, {0, 0, 0}, 1,
             {0, 0, 0}, {0, 0, 0}, 1);
     MarchingInfo mi;
-    initializeRayMarch(mi, r, tMin);
+    int ret = initializeRayMarch(mi, r, tMin);
+    assert(ret != -1);
 
-    auto bMin = bbox->getMin();
-    while (mi.next && getObjects(mi.i, mi.j, mi.k)->getNumObjects() == 0) {
+    while (mi.valid && !occupied(mi.i, mi.j, mi.k)) {
         auto p = r.pointAtParameter(mi.tMin);
         Vec3f p1, p2, p3, p4, n;
-        hitFace(bbox, p, mi, p1, p2, p3, p4, n);
+        hitFace(bbox, p, mi, ret, p1, p2, p3, p4, n);
         if (n.Dot3(r.getDirection()) > 0) n.Negate();
         RayTree::AddEnteredFace(p1, p2, p4, p3, n, m);
 
-        mi.nextCell();
+        ret = mi.nextCell();
+        assert(ret != -1);
     }
-    if (mi.next) {
+    if (mi.valid) {
         auto p = r.pointAtParameter(mi.tMin);
         Vec3f p1, p2, p3, p4, n;
-        hitFace(bbox, p, mi, p1, p2, p3, p4, n);
+        hitFace(bbox, p, mi, ret, p1, p2, p3, p4, n);
         if (n.Dot3(r.getDirection()) > 0) n.Negate();
         RayTree::AddHitCellFace(p1, p2, p4, p3, n, m);
 
