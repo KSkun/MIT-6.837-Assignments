@@ -24,7 +24,7 @@ public:
                 minmaxY = std::minmax(arrY),
                 minmaxZ = std::minmax(arrZ);
         bbox = new BoundingBox(Vec3f(minmaxX.first, minmaxY.first, minmaxZ.first),
-                               Vec3f(minmaxY.second, minmaxY.second, minmaxZ.second));
+                               Vec3f(minmaxX.second, minmaxY.second, minmaxZ.second));
     }
 
     bool intersect(const Ray &r, Hit &h, float tMin) override;
