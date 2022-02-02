@@ -93,9 +93,9 @@ void Sphere::paint() {
                 }
                 if ((p3 - p4).Length() > EPSILON) {
                     glNormal3f(n2.x(), n2.y(), n2.z());
-                    glVertex3f(p2.x(), p2.y(), p2.z());
-                    glVertex3f(p3.x(), p3.y(), p3.z());
                     glVertex3f(p4.x(), p4.y(), p4.z());
+                    glVertex3f(p3.x(), p3.y(), p3.z());
+                    glVertex3f(p2.x(), p2.y(), p2.z());
                 }
             } else {
                 if ((p1 - p2).Length() > EPSILON) {
@@ -107,12 +107,12 @@ void Sphere::paint() {
                     glVertex3f(p3.x(), p3.y(), p3.z());
                 }
                 if ((p3 - p4).Length() > EPSILON) {
-                    glNormal3f(n2.x(), n2.y(), n2.z());
-                    glVertex3f(p2.x(), p2.y(), p2.z());
-                    glNormal3f(n3.x(), n3.y(), n3.z());
-                    glVertex3f(p3.x(), p3.y(), p3.z());
                     glNormal3f(n4.x(), n4.y(), n4.z());
                     glVertex3f(p4.x(), p4.y(), p4.z());
+                    glNormal3f(n3.x(), n3.y(), n3.z());
+                    glVertex3f(p3.x(), p3.y(), p3.z());
+                    glNormal3f(n2.x(), n2.y(), n2.z());
+                    glVertex3f(p2.x(), p2.y(), p2.z());
                 }
             }
         }
