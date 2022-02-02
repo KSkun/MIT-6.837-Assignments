@@ -31,6 +31,8 @@ public:
 
     void paint() override;
 
+    void insertIntoGrid(Grid *g, Matrix *m) override;
+
 protected:
     Vec3f a, b, c, normal;
 };

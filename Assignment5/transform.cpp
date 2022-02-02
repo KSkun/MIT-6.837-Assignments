@@ -49,5 +49,7 @@ void Transform::paint() {
 }
 
 void Transform::insertIntoGrid(Grid *g, Matrix *m) {
-    obj->insertIntoGrid(g, &matInv);
+    auto nowMat = Matrix(mat);
+    if (m != nullptr) nowMat = *m * nowMat;
+    obj->insertIntoGrid(g, &nowMat);
 }
