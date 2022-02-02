@@ -50,11 +50,18 @@ public:
     Extend(bb->min);
     Extend(bb->max); }
 
-  // DEBUGGING 
+  // DEBUGGING
   void Print() const {
     printf ("%f %f %f  -> %f %f %f\n", min.x(),min.y(),min.z(),
 	    max.x(),max.y(),max.z()); }
   void paint() const;
+
+  [[nodiscard]] bool in(const Vec3f &p) const {
+      auto inX = p.x() >= min.x() && p.x() <= max.x(),
+        inY = p.y() >= min.y() && p.y() <= max.y(),
+        inZ = p.z() >= min.z() && p.z() <= max.z();
+      return inX && inY && inZ;
+  }
 
 private:
 

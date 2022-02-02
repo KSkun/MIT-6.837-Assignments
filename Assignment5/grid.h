@@ -84,6 +84,19 @@ public:
 
     int initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin) const;
 
+    std::array<Vec3f, 8> getVoxelVertices(int i, int j, int k) {
+        auto bMin = bbox->getMin();
+        auto p1 = bMin + Vec3f(i * lx, j * ly, k * lz),
+                p2 = bMin + Vec3f((i + 1) * lx, j * ly, k * lz),
+                p3 = bMin + Vec3f((i + 1) * lx, (j + 1) * ly, k * lz),
+                p4 = bMin + Vec3f(i * lx, (j + 1) * ly, k * lz),
+                p5 = bMin + Vec3f(i * lx, j * ly, (k + 1) * lz),
+                p6 = bMin + Vec3f((i + 1) * lx, j * ly, (k + 1) * lz),
+                p7 = bMin + Vec3f((i + 1) * lx, (j + 1) * ly, (k + 1) * lz),
+                p8 = bMin + Vec3f(i * lx, (j + 1) * ly, (k + 1) * lz);
+        return {p1, p2, p3, p4, p5, p6, p7, p8};
+    }
+
 protected:
     int nx, ny, nz;
     float lx, ly, lz;
