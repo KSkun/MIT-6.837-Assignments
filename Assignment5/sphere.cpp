@@ -2,8 +2,6 @@
 // Created by kskun on 2021/10/4.
 //
 
-#define _USE_MATH_DEFINES
-
 #include <math.h>
 
 #include "sphere.h"

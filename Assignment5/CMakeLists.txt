@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 file(GLOB SRC "*.h" "*.cpp" "*.C")
 add_executable(${PROJECT_NAME} ${SRC})
 
-add_definitions(-DNOMINMAX)
+add_definitions(-DNOMINMAX -D_USE_MATH_DEFINES)
 
 # OpenGL dependencies
 set(GLUT_ROOT_PATH glut)
