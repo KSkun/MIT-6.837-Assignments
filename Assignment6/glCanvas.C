@@ -9,6 +9,7 @@
 #include "boundingbox.h"
 
 // Included files for OpenGL Rendering
+#include <windows.h>
 #include <GL/gl.h>
 #include <GL/glut.h>
 
