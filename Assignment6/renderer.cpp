@@ -9,6 +9,7 @@
 #include "material.h"
 #include "light.h"
 #include "ray_tracer.h"
+#include "raytracing_stats.h"
 
 void DepthRenderer::Render() {
     assert(image);
@@ -95,6 +96,10 @@ void DiffuseRenderer::Render() {
 void RayTraceRenderer::Render() {
     Renderer::Render(); // preparations
     auto tracer = new RayTracer(scene, maxBounces, cutoffWeight);
+    auto grid = tracer->getGrid();
+    auto bbox = grid->getBoundingBox();
+    auto[nx, ny, nz] = grid->getSize();
+    RayTracingStats::Initialize(width, height, bbox, nx, ny, nz);
 
     for (int i = 0; i < image->Width(); i++) {
         for (int j = 0; j < image->Height(); j++) {
@@ -103,6 +108,10 @@ void RayTraceRenderer::Render() {
             Hit hit;
             image->SetPixel(i, j, tracer->traceRay(ray, camera->getTMin(), 0, 1, 1, hit));
         }
+    }
+
+    if (stats) {
+        RayTracingStats::PrintStatistics();
     }
 
     delete tracer;

@@ -7,6 +7,7 @@
 #include "grid.h"
 #include "global.h"
 #include "rayTree.h"
+#include "raytracing_stats.h"
 
 void Grid::paint() {
     auto bMin = bbox->getMin();
@@ -217,6 +218,7 @@ bool Grid::intersect(const Ray &r, Hit &h, float tMin) {
         if (n.Dot3(r.getDirection()) > 0) n.Negate();
         RayTree::AddEnteredFace(p1, p2, p4, p3, n, m);
 
+        RayTracingStats::IncrementNumGridCellsTraversed();
         ret = mi.nextCell();
         assert(ret != -1);
     }

@@ -6,6 +6,7 @@
 #include "light.h"
 #include "global.h"
 #include "rayTree.h"
+#include "raytracing_stats.h"
 
 const float DEF_INDEX_OF_REFRACTION = 1;
 
@@ -30,6 +31,8 @@ bool transmittedDirection(const Vec3f &normal, const Vec3f &incoming, float inde
 }
 
 Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight, float indexOfRefraction, Hit &hit) const {
+    RayTracingStats::IncrementNumNonShadowRays();
+
     // stop conditions
     // no intersection
 //    if (!group->intersect(ray, hit, tmin)) {
@@ -65,6 +68,7 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight, float
         // cast shadow ray and test if blocked
         Ray lightRay = {hit.getIntersectionPoint() - ray.getDirection() * 0.001f, dirToLight};
         Hit lightHit;
+        RayTracingStats::IncrementNumShadowRays();
         if (shadows && group->intersect(lightRay, lightHit, 0) && fcmp(lightHit.getT() - disToLight) < 0) {
             RayTree::AddShadowSegment(lightRay, 0, lightHit.getT());
             continue;

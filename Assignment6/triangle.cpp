@@ -6,8 +6,10 @@
 #include "matrix.h"
 #include "global.h"
 #include "grid.h"
+#include "raytracing_stats.h"
 
 bool Triangle::intersect(const Ray &r, Hit &h, float tMin) {
+    RayTracingStats::IncrementNumIntersections();
     auto detA = det3x3(
             a.x() - b.x(), a.x() - c.x(), r.getDirection().x(),
             a.y() - b.y(), a.y() - c.y(), r.getDirection().y(),

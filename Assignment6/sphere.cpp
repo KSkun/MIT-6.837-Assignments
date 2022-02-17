@@ -7,8 +7,10 @@
 #include "sphere.h"
 #include "global.h"
 #include "matrix.h"
+#include "raytracing_stats.h"
 
 bool Sphere::intersect(const Ray &r, Hit &h, float tMin) {
+    RayTracingStats::IncrementNumIntersections();
     auto vecOriCen = center - r.getOrigin();
     auto disOriCen = vecOriCen.Length();
     if (fcmp(disOriCen) == 0) { // ray origin on sphere, origin is intersection

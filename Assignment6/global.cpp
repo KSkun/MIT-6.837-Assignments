@@ -13,6 +13,7 @@ bool gouraud = false;
 bool gui = false;
 bool shadows = false;
 bool visualizeGrid = false;
+bool stats = false;
 
 int width = 100;
 int height = 100;

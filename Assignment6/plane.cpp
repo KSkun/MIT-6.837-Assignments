@@ -4,8 +4,10 @@
 
 #include "plane.h"
 #include "global.h"
+#include "raytracing_stats.h"
 
 bool Plane::intersect(const Ray &r, Hit &h, float tMin) {
+    RayTracingStats::IncrementNumIntersections();
     auto rdDotN = r.getDirection().Dot3(normal);
     auto roDotN = r.getOrigin().Dot3(normal);
     if (rdDotN == 0) { // Rd dot N == 0, Rd vertical to N

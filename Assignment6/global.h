@@ -12,6 +12,7 @@ extern bool gouraud;
 extern bool gui;
 extern bool shadows;
 extern bool visualizeGrid;
+extern bool stats;
 
 extern int width;
 extern int height;
