@@ -106,7 +106,14 @@ void RayTraceRenderer::Render() {
             auto ray = camera->generateRay(Vec2f((float) i / image->Width(),
                                                  (float) j / image->Height()));
             Hit hit;
-            image->SetPixel(i, j, tracer->traceRay(ray, camera->getTMin(), 0, 1, 1, hit));
+            Vec3f color;
+            if (gridNX != -1 && !visualizeGrid) {
+                // grid accelerated ray tracing
+                color = tracer->traceRayFast(ray, camera->getTMin(), 0, 1, 1, hit);
+            } else {
+                color = tracer->traceRay(ray, camera->getTMin(), 0, 1, 1, hit);
+            }
+            image->SetPixel(i, j, color);
         }
     }
 
