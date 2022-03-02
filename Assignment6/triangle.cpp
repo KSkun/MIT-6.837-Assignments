@@ -7,6 +7,7 @@
 #include "global.h"
 #include "grid.h"
 #include "raytracing_stats.h"
+#include "transform.h"
 
 bool Triangle::intersect(const Ray &r, Hit &h, float tMin) {
     RayTracingStats::IncrementNumIntersections();
@@ -85,10 +86,11 @@ void Triangle::insertIntoGrid(Grid *g, Matrix *m) {
             jMax = (int) ceil((max.y() - pMin.y()) / ly),
             kMin = (int) floor((min.z() - pMin.z()) / lz),
             kMax = (int) ceil((max.z() - pMin.z()) / lz);
+    auto tr = new Transform(*m, this);
     for (int i = std::max(iMin, 0); i <= std::min(iMax, nx - 1); i++) {
         for (int j = std::max(jMin, 0); j <= std::min(jMax, ny - 1); j++) {
             for (int k = std::max(kMin, 0); k <= std::min(kMax, nz - 1); k++) {
-                g->insertObject(i, j, k, this);
+                g->insertObject(i, j, k, tr);
             }
         }
     }

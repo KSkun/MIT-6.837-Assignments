@@ -6,6 +6,7 @@
 #include "global.h"
 #include "raytracing_stats.h"
 #include "grid.h"
+#include "transform.h"
 
 bool Plane::intersect(const Ray &r, Hit &h, float tMin) {
     RayTracingStats::IncrementNumIntersections();
@@ -60,5 +61,6 @@ void Plane::paint() {
 }
 
 void Plane::insertIntoGrid(Grid *g, Matrix *m) {
-    g->insertInfiniteObject(this);
+    auto tr = new Transform(*m, this);
+    g->insertInfiniteObject(tr);
 }
