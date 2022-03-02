@@ -68,4 +68,21 @@ protected:
     float exponent, indexOfRefraction;
 };
 
+class Checkerboard : public Material {
+public:
+    Checkerboard(Matrix *m, Material *mat1, Material *mat2) :
+            Material(mat1->getDiffuseColor()), m(m), mat1(mat1), mat2(mat2) {}
+
+    void glSetMaterial() const override {
+        mat1->glSetMaterial();
+    }
+
+    [[nodiscard]] Vec3f Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight,
+                              const Vec3f &lightColor) const override;
+
+private:
+    Matrix *m;
+    Material *mat1, *mat2;
+};
+
 #endif

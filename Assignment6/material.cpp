@@ -6,6 +6,7 @@
 #include <gl/GL.h>
 
 #include "material.h"
+#include "matrix.h"
 
 Vec3f PhongMaterial::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight, const Vec3f &lightColor) const {
     Vec3f n = hit.getNormal();
@@ -24,8 +25,8 @@ Vec3f PhongMaterial::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLig
 
 void PhongMaterial::glSetMaterial() const {
 
-    GLfloat one[4] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat zero[4] = { 0.0, 0.0, 0.0, 0.0 };
+    GLfloat one[4] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat zero[4] = {0.0, 0.0, 0.0, 0.0};
     GLfloat specular[4] = {
             getSpecularColor().r(),
             getSpecularColor().g(),
@@ -75,4 +76,16 @@ void PhongMaterial::glSetMaterial() const {
   }
 
 #endif
+}
+
+Vec3f Checkerboard::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight, const Vec3f &lightColor) const {
+    auto p = hit.getIntersectionPoint();
+    m->Transform(p);
+    auto px = (int) floor(p.x()), py = (int) floor(p.y()), pz = (int) floor(p.z());
+    auto oddCount = (px % 2) + (py % 2) + (pz % 2);
+    if (oddCount % 2 == 1) {
+        return mat1->Shade(ray, hit, dirToLight, lightColor);
+    } else {
+        return mat2->Shade(ray, hit, dirToLight, lightColor);
+    }
 }
