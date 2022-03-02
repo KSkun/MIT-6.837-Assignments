@@ -5,6 +5,7 @@
 #include "plane.h"
 #include "global.h"
 #include "raytracing_stats.h"
+#include "grid.h"
 
 bool Plane::intersect(const Ray &r, Hit &h, float tMin) {
     RayTracingStats::IncrementNumIntersections();
@@ -56,4 +57,8 @@ void Plane::paint() {
     glVertex3f(p3.x(), p3.y(), p3.z());
     glVertex3f(p4.x(), p4.y(), p4.z());
     glEnd();
+}
+
+void Plane::insertIntoGrid(Grid *g, Matrix *m) {
+    g->insertInfiniteObject(this);
 }

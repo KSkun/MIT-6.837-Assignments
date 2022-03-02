@@ -15,6 +15,8 @@ public:
 
     void paint() override;
 
+    void insertIntoGrid(Grid *g, Matrix *m) override;
+
 protected:
     constexpr static const float BIG = 1e5; // used in GL draw
 

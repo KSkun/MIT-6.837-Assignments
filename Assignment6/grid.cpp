@@ -264,7 +264,18 @@ bool Grid::intersect(const Ray &r, Hit &h, float tMin) {
         hitFace(bbox, p, mi, ret, p1, p2, p3, p4, n);
         if (n.Dot3(r.getDirection()) > 0) n.Negate();
         RayTree::AddHitCellFace(p1, p2, p4, p3, n, m);
-        return true;
     }
-    return false;
+
+    // intersect with infinite objects (planes)
+    for (int i = 0; i < infObjs->getNumObjects(); i++) {
+        auto obj = infObjs->getObject(i);
+        if (obj->intersect(r, hTmp, tMin)) {
+            if (!hSet || hTmp.getT() < h.getT()) {
+                h = hTmp;
+                hSet = true;
+            }
+        }
+    }
+
+    return hSet;
 }

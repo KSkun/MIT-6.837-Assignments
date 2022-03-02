@@ -29,11 +29,13 @@ public:
 //        isOpaque = new bool[nx * ny * nz];
 //        std::fill(isOpaque, isOpaque + nx * ny * nz, false);
         objects = new Object3DVector[nx * ny * nz];
+        infObjs = new Object3DVector;
     }
 
     ~Grid() override {
 //        delete[] isOpaque;
         delete[] objects;
+        delete infObjs;
     }
 
     void insertObject(int x, int y, int z, Object3D *obj) {
@@ -43,11 +45,19 @@ public:
         objects[x * ny * nz + y * nz + z].addObject(obj);
     }
 
+    void insertInfiniteObject(Object3D *obj) {
+        infObjs->addObject(obj);
+    }
+
     [[nodiscard]] Object3DVector *getObjects(int x, int y, int z) const {
         assert(x >= 0 && x < nx);
         assert(y >= 0 && y < ny);
         assert(z >= 0 && z < nz);
         return &objects[x * ny * nz + y * nz + z];
+    }
+
+    [[nodiscard]] Object3DVector *getInfiniteObjects() const {
+        return infObjs;
     }
 
     [[nodiscard]] bool occupied(int x, int y, int z) const {
@@ -102,6 +112,7 @@ protected:
     float lx, ly, lz;
 //    bool *isOpaque;
     Object3DVector *objects;
+    Object3DVector *infObjs;
 
     void hitFace(const BoundingBox *bbox, const Vec3f &inter, const MarchingInfo &mi, const int ret,
                  Vec3f &p1, Vec3f &p2, Vec3f &p3, Vec3f &p4, Vec3f &n) const;
