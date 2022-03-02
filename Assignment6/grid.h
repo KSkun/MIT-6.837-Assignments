@@ -105,6 +105,15 @@ protected:
 
     void hitFace(const BoundingBox *bbox, const Vec3f &inter, const MarchingInfo &mi, const int ret,
                  Vec3f &p1, Vec3f &p2, Vec3f &p3, Vec3f &p4, Vec3f &n) const;
+
+    bool inVoxel(const Vec3f &p, int i, int j, int k) {
+        auto p1 = bbox->getMin() + Vec3f(i * lx, j * ly, k * lz),
+                p2 = bbox->getMin() + Vec3f((i + 1) * lx, (j + 1) * ly, (k + 1) * lz);
+        auto b1 = p.x() >= p1.x() && p.x() <= p2.x(),
+                b2 = p.y() >= p1.y() && p.y() <= p2.y(),
+                b3 = p.z() >= p1.z() && p.z() <= p2.z();
+        return b1 && b2 && b3;
+    }
 };
 
 class MarchingInfo {

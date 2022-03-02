@@ -3,6 +3,7 @@
 //
 
 #include <algorithm>
+#include <unordered_map>
 
 #include "grid.h"
 #include "global.h"
@@ -204,32 +205,65 @@ void Grid::hitFace(const BoundingBox *bbox, const Vec3f &inter, const MarchingIn
 }
 
 bool Grid::intersect(const Ray &r, Hit &h, float tMin) {
+    // cell face material: white diffuse material
     static Material *m = new PhongMaterial(
             {1, 1, 1}, {0, 0, 0}, 1,
             {0, 0, 0}, {0, 0, 0}, 1);
+
+    // temp variables
+    std::unordered_map<Object3D *, std::pair<bool, Hit>> hitCache;
+    bool hSet = false;
+    Hit hTmp;
+    Vec3f p1, p2, p3, p4, n;
+
     MarchingInfo mi;
     int ret = initializeRayMarch(mi, r, tMin);
     assert(ret != -1);
 
-    while (mi.valid && !occupied(mi.i, mi.j, mi.k)) {
+    while (mi.valid) {
+        RayTracingStats::IncrementNumGridCellsTraversed();
+
+        // draw entered cell face
         auto p = r.pointAtParameter(mi.tMin);
-        Vec3f p1, p2, p3, p4, n;
         hitFace(bbox, p, mi, ret, p1, p2, p3, p4, n);
         if (n.Dot3(r.getDirection()) > 0) n.Negate();
         RayTree::AddEnteredFace(p1, p2, p4, p3, n, m);
 
-        RayTracingStats::IncrementNumGridCellsTraversed();
+        if (occupied(mi.i, mi.j, mi.k)) {
+            auto objs = getObjects(mi.i, mi.j, mi.k);
+            for (int i = 0; i < objs->getNumObjects(); i++) {
+                auto obj = objs->getObject(i);
+                bool hasInter;
+                // query hit cache first to reduce intersection calculation
+                if (hitCache.contains(obj)) {
+                    auto p = hitCache[obj];
+                    hasInter = p.first;
+                    hTmp = p.second;
+                } else {
+                    hasInter = obj->intersect(r, hTmp, tMin);
+                    hitCache[obj] = {hasInter, hTmp};
+                }
+                // closest intersection inside the cell
+                if (hasInter && inVoxel(hTmp.getIntersectionPoint(), mi.i, mi.j, mi.k)) {
+                    if (!hSet || hTmp.getT() < h.getT()) {
+                        h = hTmp;
+                        hSet = true;
+                    }
+                }
+            }
+            if (hSet) break;
+        }
+
         ret = mi.nextCell();
         assert(ret != -1);
     }
-    if (mi.valid) {
+
+    // draw hit cell face
+    if (hSet) {
         auto p = r.pointAtParameter(mi.tMin);
-        Vec3f p1, p2, p3, p4, n;
         hitFace(bbox, p, mi, ret, p1, p2, p3, p4, n);
         if (n.Dot3(r.getDirection()) > 0) n.Negate();
         RayTree::AddHitCellFace(p1, p2, p4, p3, n, m);
-
-        h.set(mi.tMin, m, n, r);
         return true;
     }
     return false;
