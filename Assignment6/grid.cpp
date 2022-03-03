@@ -218,7 +218,7 @@ bool Grid::intersect(const Ray &r, Hit &h, float tMin) {
 
     MarchingInfo mi;
     int ret = initializeRayMarch(mi, r, tMin);
-    assert(ret != -1);
+    if (ret == -1) return false;
 
     while (mi.valid) {
         RayTracingStats::IncrementNumGridCellsTraversed();

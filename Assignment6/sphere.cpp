@@ -129,8 +129,11 @@ void Sphere::insertIntoGrid(Grid *g, Matrix *m) {
     auto[lx, ly, lz] = g->getVoxelSize();
     auto diagHalf = sqrt(lx * lx + ly * ly + lz * lz) / 2.0f;
     Matrix mInv;
-    if (m != nullptr) m->Inverse(mInv);
-    auto tr = new Transform(*m, this);
+    Object3D *objIn = this;
+    if (m != nullptr) {
+        m->Inverse(mInv);
+        objIn = new Transform(*m, this);
+    }
     for (int i = 0; i < nx; i++) {
         for (int j = 0; j < ny; j++) {
             for (int k = 0; k < nz; k++) {
@@ -138,7 +141,7 @@ void Sphere::insertIntoGrid(Grid *g, Matrix *m) {
                         lx * (i + 0.5f), ly * (j + 0.5f), lz * (k + 0.5f));
                 if (m != nullptr) mInv.Transform(voxCen); // point inside transformation
                 if ((voxCen - center).Length() <= radius + diagHalf) {
-                    g->insertObject(i, j, k, tr);
+                    g->insertObject(i, j, k, objIn);
                 }
             }
         }

@@ -69,10 +69,12 @@ void Triangle::insertIntoGrid(Grid *g, Matrix *m) {
     auto[lx, ly, lz] = g->getVoxelSize();
     auto ta = Vec3f(a), tb = Vec3f(b), tc = Vec3f(c);
     auto pMin = g->getMin();
+    Object3D *objIn = this;
     if (m != nullptr) {
         m->Transform(ta);
         m->Transform(tb);
         m->Transform(tc);
+        objIn = new Transform(*m, this);
     }
     auto min = Vec3f(std::min({ta.x(), tb.x(), tc.x()}),
                      std::min({ta.y(), tb.y(), tc.y()}),
@@ -86,11 +88,10 @@ void Triangle::insertIntoGrid(Grid *g, Matrix *m) {
             jMax = (int) ceil((max.y() - pMin.y()) / ly),
             kMin = (int) floor((min.z() - pMin.z()) / lz),
             kMax = (int) ceil((max.z() - pMin.z()) / lz);
-    auto tr = new Transform(*m, this);
     for (int i = std::max(iMin, 0); i <= std::min(iMax, nx - 1); i++) {
         for (int j = std::max(jMin, 0); j <= std::min(jMax, ny - 1); j++) {
             for (int k = std::max(kMin, 0); k <= std::min(kMax, nz - 1); k++) {
-                g->insertObject(i, j, k, tr);
+                g->insertObject(i, j, k, objIn);
             }
         }
     }

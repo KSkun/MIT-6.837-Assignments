@@ -61,6 +61,9 @@ void Plane::paint() {
 }
 
 void Plane::insertIntoGrid(Grid *g, Matrix *m) {
-    auto tr = new Transform(*m, this);
-    g->insertInfiniteObject(tr);
+    Object3D *objIn = this;
+    if (m != nullptr) {
+        objIn = new Transform(*m, this);
+    }
+    g->insertInfiniteObject(objIn);
 }
