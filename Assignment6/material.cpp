@@ -84,7 +84,7 @@ Vec3f Checkerboard::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLigh
     m->Transform(p);
     auto px = (int) floor(p.x()), py = (int) floor(p.y()), pz = (int) floor(p.z());
     auto oddCount = (px % 2) + (py % 2) + (pz % 2);
-    if (oddCount % 2 == 1) {
+    if (oddCount % 2 == 0) {
         return mat1->Shade(ray, hit, dirToLight, lightColor);
     } else {
         return mat2->Shade(ray, hit, dirToLight, lightColor);
