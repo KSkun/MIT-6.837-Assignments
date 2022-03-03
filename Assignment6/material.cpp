@@ -7,6 +7,7 @@
 
 #include "material.h"
 #include "matrix.h"
+#include "perlin_noise.h"
 
 Vec3f PhongMaterial::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight, const Vec3f &lightColor) const {
     Vec3f n = hit.getNormal();
@@ -88,4 +89,51 @@ Vec3f Checkerboard::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLigh
     } else {
         return mat2->Shade(ray, hit, dirToLight, lightColor);
     }
+}
+
+Vec3f Noise::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight, const Vec3f &lightColor) const {
+    auto p = hit.getIntersectionPoint();
+    m->Transform(p);
+    float N = 0;
+    for (int i = 1; i <= octaves; i++) {
+        float oct = powf(2, i);
+        N += PerlinNoise::noise(p.x() * oct, p.y() * oct, p.z() * oct) / oct;
+    }
+    N = std::max(std::min(N, 1.0f), 0.0f); // clamp N to [0, 1]
+
+    auto color1 = mat1->Shade(ray, hit, dirToLight, lightColor),
+            color2 = mat2->Shade(ray, hit, dirToLight, lightColor);
+    return color1 * N + color2 * (1 - N);
+}
+
+Vec3f Marble::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight, const Vec3f &lightColor) const {
+    auto p = hit.getIntersectionPoint();
+    m->Transform(p);
+    float N = 0;
+    for (int i = 1; i <= octaves; i++) {
+        float oct = powf(2, i);
+        N += PerlinNoise::noise(p.x() * oct, p.y() * oct, p.z() * oct) / oct;
+    }
+    float M = sin(frequency * p.x() + amplitude * N);
+    M = (M + 1) / 2; // map [-1, 1] to [0, 1]
+
+    auto color1 = mat1->Shade(ray, hit, dirToLight, lightColor),
+            color2 = mat2->Shade(ray, hit, dirToLight, lightColor);
+    return color1 * M + color2 * (1 - M);
+}
+
+Vec3f Wood::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight, const Vec3f &lightColor) const {
+    auto p = hit.getIntersectionPoint();
+    m->Transform(p);
+    float N = 0;
+    for (int i = 1; i <= octaves; i++) {
+        float oct = powf(2, i);
+        N += PerlinNoise::noise(p.x() * oct, p.y() * oct, p.z() * oct) / oct;
+    }
+    float M = sin(frequency * (p.x() * p.x() + p.y() * p.y()) + amplitude * N);
+    M = (M + 1) / 2; // map [-1, 1] to [0, 1]
+
+    auto color1 = mat1->Shade(ray, hit, dirToLight, lightColor),
+            color2 = mat2->Shade(ray, hit, dirToLight, lightColor);
+    return color1 * M + color2 * (1 - M);
 }

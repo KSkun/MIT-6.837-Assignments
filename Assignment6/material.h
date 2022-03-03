@@ -85,4 +85,64 @@ private:
     Material *mat1, *mat2;
 };
 
+class Noise : public Material {
+public:
+    Noise(Matrix *m, Material *mat1, Material *mat2, int octaves) :
+            Material(mat1->getDiffuseColor()), m(m), mat1(mat1), mat2(mat2), octaves(octaves) {}
+
+    void glSetMaterial() const override {
+        mat1->glSetMaterial();
+    }
+
+    [[nodiscard]] Vec3f Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight,
+                              const Vec3f &lightColor) const override;
+
+private:
+    Matrix *m;
+    Material *mat1, *mat2;
+    int octaves;
+};
+
+class Marble : public Material {
+public:
+    Marble(Matrix *m, Material *mat1, Material *mat2, int octaves,
+           float frequency, float amplitude) :
+            Material(mat1->getDiffuseColor()), m(m), mat1(mat1), mat2(mat2), octaves(octaves),
+            frequency(frequency), amplitude(amplitude) {}
+
+    void glSetMaterial() const override {
+        mat1->glSetMaterial();
+    }
+
+    [[nodiscard]] Vec3f Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight,
+                              const Vec3f &lightColor) const override;
+
+private:
+    Matrix *m;
+    Material *mat1, *mat2;
+    int octaves;
+    float frequency, amplitude;
+};
+
+class Wood : public Material {
+public:
+    Wood(Matrix *m, Material *mat1, Material *mat2, int octaves,
+           float frequency, float amplitude) :
+            Material(mat1->getDiffuseColor()), m(m), mat1(mat1), mat2(mat2), octaves(octaves),
+            frequency(frequency), amplitude(amplitude) {}
+
+    void glSetMaterial() const override {
+        mat1->glSetMaterial();
+    }
+
+    [[nodiscard]] Vec3f Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight,
+                              const Vec3f &lightColor) const override;
+
+private:
+    Matrix *m;
+    Material *mat1, *mat2;
+    int octaves;
+    float frequency, amplitude;
+};
+
 #endif
