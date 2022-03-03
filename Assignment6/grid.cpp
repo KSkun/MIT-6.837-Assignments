@@ -230,28 +230,34 @@ bool Grid::intersect(const Ray &r, Hit &h, float tMin) {
         RayTree::AddEnteredFace(p1, p2, p4, p3, n, m);
 
         if (occupied(mi.i, mi.j, mi.k)) {
-            auto objs = getObjects(mi.i, mi.j, mi.k);
-            for (int i = 0; i < objs->getNumObjects(); i++) {
-                auto obj = objs->getObject(i);
-                bool hasInter;
-                // query hit cache first to reduce intersection calculation
-                if (hitCache.contains(obj)) {
-                    auto p = hitCache[obj];
-                    hasInter = p.first;
-                    hTmp = p.second;
-                } else {
-                    hasInter = obj->intersect(r, hTmp, tMin);
-                    hitCache[obj] = {hasInter, hTmp};
-                }
-                // closest intersection inside the cell
-                if (hasInter && inVoxel(hTmp.getIntersectionPoint(), mi.i, mi.j, mi.k)) {
-                    if (!hSet || hTmp.getT() < h.getT()) {
-                        h = hTmp;
-                        hSet = true;
+            if (visualizeGrid) {
+                h.set(mi.tMin, m, n, r);
+                hSet = true;
+                break;
+            } else {
+                auto objs = getObjects(mi.i, mi.j, mi.k);
+                for (int i = 0; i < objs->getNumObjects(); i++) {
+                    auto obj = objs->getObject(i);
+                    bool hasInter;
+                    // query hit cache first to reduce intersection calculation
+                    if (hitCache.contains(obj)) {
+                        auto p = hitCache[obj];
+                        hasInter = p.first;
+                        hTmp = p.second;
+                    } else {
+                        hasInter = obj->intersect(r, hTmp, tMin);
+                        hitCache[obj] = {hasInter, hTmp};
+                    }
+                    // closest intersection inside the cell
+                    if (hasInter && inVoxel(hTmp.getIntersectionPoint(), mi.i, mi.j, mi.k)) {
+                        if (!hSet || hTmp.getT() < h.getT()) {
+                            h = hTmp;
+                            hSet = true;
+                        }
                     }
                 }
+                if (hSet) break;
             }
-            if (hSet) break;
         }
 
         ret = mi.nextCell();

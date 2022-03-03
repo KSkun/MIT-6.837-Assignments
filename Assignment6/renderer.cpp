@@ -111,7 +111,7 @@ void RayTraceRenderer::Render() {
                                                  (float) j / image->Height()));
             Hit hit;
             Vec3f color;
-            if (gridNX != -1 && !visualizeGrid) {
+            if (gridNX != -1) {
                 // grid accelerated ray tracing
                 color = tracer->traceRayFast(ray, camera->getTMin(), 0, 1, 1, hit);
             } else {
