@@ -47,7 +47,12 @@ void TraceRay(float x, float y) {
     auto camera = parser->getCamera();
     auto ray = camera->generateRay({x, y});
     Hit hit;
-    tracer->traceRay(ray, camera->getTMin(), 0, 1, 1, hit);
+    if (gridNX != -1) {
+        // grid accelerated ray tracing
+        tracer->traceRayFast(ray, camera->getTMin(), 0, 1, 1, hit);
+    } else {
+        tracer->traceRay(ray, camera->getTMin(), 0, 1, 1, hit);
+    }
 }
 
 int main(int argc, char *argv[]) {
