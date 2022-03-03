@@ -90,17 +90,21 @@ int Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tMin) const {
 
     // calculate tNear & tFar
     float tNear, tFar;
+    bool tNearSet = false, tFarSet = false;
     int dNear;
     for (int i = 0; i < 3; i++) {
+        if (Rd[i] == 0) continue;
         float t1 = (pMin[i] - Ro[i]) / Rd[i],
                 t2 = (pMax[i] - Ro[i]) / Rd[i];
         if (t1 > t2) std::swap(t1, t2);
-        if (i == 0 || t1 > tNear) {
+        if (!tNearSet || t1 > tNear) {
             tNear = t1;
             dNear = i;
+            tNearSet = true;
         }
-        if (i == 0 || t2 < tFar) {
+        if (!tFarSet || t2 < tFar) {
             tFar = t2;
+            tFarSet = true;
         }
     }
     // miss bounding box
@@ -138,9 +142,13 @@ int Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tMin) const {
     mi.k = std::min((int) (pRelative.z() / lz), nz - 1);
 
     // next grid index
+    float inf = std::numeric_limits<float>::infinity();
     mi.tNextX = ((mi.i + (mi.signX < 0 ? 0 : 1)) * lx + pMin.x() - Ro.x()) / Rd.x();
+    if (Rd.x() == 0) mi.tNextX = inf;
     mi.tNextY = ((mi.j + (mi.signY < 0 ? 0 : 1)) * ly + pMin.y() - Ro.y()) / Rd.y();
+    if (Rd.y() == 0) mi.tNextY = inf;
     mi.tNextZ = ((mi.k + (mi.signZ < 0 ? 0 : 1)) * lz + pMin.z() - Ro.z()) / Rd.z();
+    if (Rd.z() == 0) mi.tNextZ = inf;
     return ret;
 }
 
