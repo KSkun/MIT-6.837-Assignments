@@ -132,6 +132,7 @@ int Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tMin) const {
     } else {
         // origin inside grid
         mi.tMin = tMin;
+        ret = 5; // ignore entered face when origin is inside
     }
 
     // grid index
@@ -232,10 +233,12 @@ bool Grid::intersect(const Ray &r, Hit &h, float tMin) {
         RayTracingStats::IncrementNumGridCellsTraversed();
 
         // draw entered cell face
-        auto p = r.pointAtParameter(mi.tMin);
-        hitFace(bbox, p, mi, ret, p1, p2, p3, p4, n);
-        if (n.Dot3(r.getDirection()) > 0) n.Negate();
-        RayTree::AddEnteredFace(p1, p2, p4, p3, n, m);
+        if (ret != 5) {
+            auto p = r.pointAtParameter(mi.tMin);
+            hitFace(bbox, p, mi, ret, p1, p2, p3, p4, n);
+            if (n.Dot3(r.getDirection()) > 0) n.Negate();
+            RayTree::AddEnteredFace(p1, p2, p4, p3, n, m);
+        }
 
         if (occupied(mi.i, mi.j, mi.k)) {
             if (visualizeGrid) {
@@ -273,7 +276,7 @@ bool Grid::intersect(const Ray &r, Hit &h, float tMin) {
     }
 
     // draw hit cell face
-    if (hSet) {
+    if (hSet && ret != 5) {
         auto p = r.pointAtParameter(mi.tMin);
         hitFace(bbox, p, mi, ret, p1, p2, p3, p4, n);
         if (n.Dot3(r.getDirection()) > 0) n.Negate();
