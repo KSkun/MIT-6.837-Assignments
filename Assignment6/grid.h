@@ -12,6 +12,7 @@
 
 #include "object3d.h"
 #include "object3dvector.h"
+#include "global.h"
 
 class MarchingInfo;
 
@@ -120,9 +121,9 @@ protected:
     bool inVoxel(const Vec3f &p, int i, int j, int k) {
         auto p1 = bbox->getMin() + Vec3f(i * lx, j * ly, k * lz),
                 p2 = bbox->getMin() + Vec3f((i + 1) * lx, (j + 1) * ly, (k + 1) * lz);
-        auto b1 = p.x() >= p1.x() && p.x() <= p2.x(),
-                b2 = p.y() >= p1.y() && p.y() <= p2.y(),
-                b3 = p.z() >= p1.z() && p.z() <= p2.z();
+        auto b1 = p.x() + EPSILON >= p1.x() && p.x() - EPSILON <= p2.x(),
+                b2 = p.y() + EPSILON >= p1.y() && p.y() - EPSILON <= p2.y(),
+                b3 = p.z() + EPSILON >= p1.z() && p.z() - EPSILON <= p2.z();
         return b1 && b2 && b3;
     }
 };
