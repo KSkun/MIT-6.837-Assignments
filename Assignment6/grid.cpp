@@ -227,60 +227,60 @@ bool Grid::intersect(const Ray &r, Hit &h, float tMin) {
 
     MarchingInfo mi;
     int ret = initializeRayMarch(mi, r, tMin);
-    if (ret == -1) return false;
+    if (ret != -1) {
+        while (mi.valid) {
+            RayTracingStats::IncrementNumGridCellsTraversed();
 
-    while (mi.valid) {
-        RayTracingStats::IncrementNumGridCellsTraversed();
+            // draw entered cell face
+            if (ret != 5) {
+                auto p = r.pointAtParameter(mi.tMin);
+                hitFace(bbox, p, mi, ret, p1, p2, p3, p4, n);
+                if (n.Dot3(r.getDirection()) > 0) n.Negate();
+                RayTree::AddEnteredFace(p1, p2, p4, p3, n, m);
+            }
 
-        // draw entered cell face
-        if (ret != 5) {
-            auto p = r.pointAtParameter(mi.tMin);
-            hitFace(bbox, p, mi, ret, p1, p2, p3, p4, n);
-            if (n.Dot3(r.getDirection()) > 0) n.Negate();
-            RayTree::AddEnteredFace(p1, p2, p4, p3, n, m);
-        }
-
-        if (occupied(mi.i, mi.j, mi.k)) {
+            if (occupied(mi.i, mi.j, mi.k)) {
 //            if (visualizeGrid) {
 //                h.set(mi.tMin, m, n, r);
 //                hSet = true;
 //                break;
 //            } else {
-            auto objs = getObjects(mi.i, mi.j, mi.k);
-            for (int i = 0; i < objs->getNumObjects(); i++) {
-                auto obj = objs->getObject(i);
-                bool hasInter;
-                // query hit cache first to reduce intersection calculation
-                if (hitCache.contains(obj)) {
-                    auto p = hitCache[obj];
-                    hasInter = p.first;
-                    hTmp = p.second;
-                } else {
-                    hasInter = obj->intersect(r, hTmp, tMin);
-                    hitCache[obj] = {hasInter, hTmp};
-                }
-                // closest intersection inside the cell
-                if (hasInter && inVoxel(hTmp.getIntersectionPoint(), mi.i, mi.j, mi.k)) {
-                    if (!hSet || hTmp.getT() < h.getT()) {
-                        h = hTmp;
-                        hSet = true;
+                auto objs = getObjects(mi.i, mi.j, mi.k);
+                for (int i = 0; i < objs->getNumObjects(); i++) {
+                    auto obj = objs->getObject(i);
+                    bool hasInter;
+                    // query hit cache first to reduce intersection calculation
+                    if (hitCache.contains(obj)) {
+                        auto p = hitCache[obj];
+                        hasInter = p.first;
+                        hTmp = p.second;
+                    } else {
+                        hasInter = obj->intersect(r, hTmp, tMin);
+                        hitCache[obj] = {hasInter, hTmp};
+                    }
+                    // closest intersection inside the cell
+                    if (hasInter && inVoxel(hTmp.getIntersectionPoint(), mi.i, mi.j, mi.k)) {
+                        if (!hSet || hTmp.getT() < h.getT()) {
+                            h = hTmp;
+                            hSet = true;
+                        }
                     }
                 }
-            }
-            if (hSet) break;
+                if (hSet) break;
 //            }
+            }
+
+            ret = mi.nextCell();
+            assert(ret != -1);
         }
 
-        ret = mi.nextCell();
-        assert(ret != -1);
-    }
-
-    // draw hit cell face
-    if (hSet && ret != 5) {
-        auto p = r.pointAtParameter(mi.tMin);
-        hitFace(bbox, p, mi, ret, p1, p2, p3, p4, n);
-        if (n.Dot3(r.getDirection()) > 0) n.Negate();
-        RayTree::AddHitCellFace(p1, p2, p4, p3, n, m);
+        // draw hit cell face
+        if (hSet && ret != 5) {
+            auto p = r.pointAtParameter(mi.tMin);
+            hitFace(bbox, p, mi, ret, p1, p2, p3, p4, n);
+            if (n.Dot3(r.getDirection()) > 0) n.Negate();
+            RayTree::AddHitCellFace(p1, p2, p4, p3, n, m);
+        }
     }
 
     // intersect with infinite objects (planes)
