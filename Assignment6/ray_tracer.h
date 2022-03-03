@@ -21,6 +21,8 @@ public:
         if (gridNX != -1) { // grid set
             grid = new Grid(group->getBoundingBox(), gridNX, gridNY, gridNZ);
             group->insertIntoGrid(grid, nullptr);
+        } else {
+            grid = nullptr;
         }
     }
 

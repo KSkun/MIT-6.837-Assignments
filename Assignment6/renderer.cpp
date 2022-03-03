@@ -96,10 +96,14 @@ void DiffuseRenderer::Render() {
 void RayTraceRenderer::Render() {
     Renderer::Render(); // preparations
     auto tracer = new RayTracer(scene, maxBounces, cutoffWeight);
-    auto grid = tracer->getGrid();
-    auto bbox = grid->getBoundingBox();
-    auto[nx, ny, nz] = grid->getSize();
-    RayTracingStats::Initialize(width, height, bbox, nx, ny, nz);
+    if (gridNX != -1) {
+        auto grid = tracer->getGrid();
+        auto bbox = grid->getBoundingBox();
+        auto[nx, ny, nz] = grid->getSize();
+        RayTracingStats::Initialize(width, height, bbox, nx, ny, nz);
+    } else {
+        RayTracingStats::Initialize(width, height, group->getBoundingBox(), 1, 1, 1);
+    }
 
     for (int i = 0; i < image->Width(); i++) {
         for (int j = 0; j < image->Height(); j++) {
