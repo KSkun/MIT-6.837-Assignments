@@ -11,9 +11,10 @@ void Group::addObject(int index, Object3D *object) {
 
     // update bounding box
     auto objBBox = object->getBoundingBox();
+    if (objBBox == nullptr) return;
     if (bbox == nullptr) {
         bbox = new BoundingBox(*objBBox);
-    } else if (objBBox != nullptr) {
+    } else {
         bbox->Extend(objBBox);
     }
 }
