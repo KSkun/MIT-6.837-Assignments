@@ -82,6 +82,9 @@ void Triangle::insertIntoGrid(Grid *g, Matrix *m) {
             max = Vec3f(std::max({ta.x(), tb.x(), tc.x()}),
                         std::max({ta.y(), tb.y(), tc.y()}),
                         std::max({ta.z(), tb.z(), tc.z()}));
+    auto epsVec = Vec3f(EPSILON, EPSILON, EPSILON);
+    min -= epsVec;
+    max += epsVec;
     auto iMin = (int) floor((min.x() - pMin.x()) / lx),
             iMax = (int) ceil((max.x() - pMin.x()) / lx),
             jMin = (int) floor((min.y() - pMin.y()) / ly),
