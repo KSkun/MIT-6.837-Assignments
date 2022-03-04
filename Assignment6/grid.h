@@ -12,7 +12,6 @@
 
 #include "object3d.h"
 #include "object3dvector.h"
-#include "global.h"
 
 class MarchingInfo;
 
@@ -114,6 +113,8 @@ protected:
 //    bool *isOpaque;
     Object3DVector *objects;
     Object3DVector *infObjs;
+
+    static constexpr const float EPSILON = 1e-4;
 
     void hitFace(const BoundingBox *bbox, const Vec3f &inter, const MarchingInfo &mi, const int ret,
                  Vec3f &p1, Vec3f &p2, Vec3f &p3, Vec3f &p4, Vec3f &n) const;
