@@ -140,7 +140,8 @@ void Sphere::insertIntoGrid(Grid *g, Matrix *m) {
                 auto voxCen = bMin + Vec3f(
                         lx * (i + 0.5f), ly * (j + 0.5f), lz * (k + 0.5f));
                 if (m != nullptr) mInv.Transform(voxCen); // point inside transformation
-                if ((voxCen - center).Length() <= radius + diagHalf) {
+                // TODO: implement correct method of checking if the sphere has intersection with the cell
+                if ((voxCen - center).Length() <= radius + diagHalf * 1.5) { // diagHalf * 1.5 is a work-around
                     g->insertObject(i, j, k, objIn);
                 }
             }
