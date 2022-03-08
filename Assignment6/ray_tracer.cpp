@@ -52,7 +52,7 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight, float
     }
 
     // ambient
-    Vec3f color = scene->getAmbientLight() * hit.getMaterial()->getDiffuseColor();
+    Vec3f color = scene->getAmbientLight() * hit.getMaterial()->getDiffuseColor(hit.getIntersectionPoint());
 
     // local shading
     for (int iLight = 0; iLight < scene->getNumLights(); iLight++) {
@@ -78,7 +78,7 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight, float
     auto material = dynamic_cast<PhongMaterial *>(hit.getMaterial());
     if (material != nullptr) {
         // reflections
-        auto reflectiveColor = material->getReflectiveColor();
+        auto reflectiveColor = material->getReflectiveColor(hit.getIntersectionPoint());
         if (reflectiveColor.Length() > 0) { // reflective material
             Ray reflectiveRay = {hit.getIntersectionPoint() - ray.getDirection() * 0.001f,
                                  mirrorDirection(hit.getNormal(), ray.getDirection())};
@@ -92,10 +92,10 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight, float
         }
 
         // refractions
-        auto refractiveColor = material->getTransparentColor();
+        auto refractiveColor = material->getTransparentColor(hit.getIntersectionPoint());
         if (refractiveColor.Length() > 0) { // refractive material
             auto realNormal = hit.getNormal(), incoming = ray.getDirection();
-            auto index_i = indexOfRefraction, index_t = material->getIndexOfRefraction();
+            auto index_i = indexOfRefraction, index_t = material->getIndexOfRefraction(hit.getIntersectionPoint());
             if (shadeBack && realNormal.Dot3(incoming) > 0) { // intersection inside the object, reverse normal
                 realNormal.Negate();
                 index_t = 1;
@@ -141,7 +141,7 @@ Vec3f RayTracer::traceRayFast(Ray &ray, float tmin, int bounces, float weight, f
     }
 
     // ambient
-    Vec3f color = scene->getAmbientLight() * hit.getMaterial()->getDiffuseColor();
+    Vec3f color = scene->getAmbientLight() * hit.getMaterial()->getDiffuseColor(hit.getIntersectionPoint());
 
     // local shading
     for (int iLight = 0; iLight < scene->getNumLights(); iLight++) {
@@ -167,7 +167,7 @@ Vec3f RayTracer::traceRayFast(Ray &ray, float tmin, int bounces, float weight, f
     auto material = dynamic_cast<PhongMaterial *>(hit.getMaterial());
     if (material != nullptr) {
         // reflections
-        auto reflectiveColor = material->getReflectiveColor();
+        auto reflectiveColor = material->getReflectiveColor(hit.getIntersectionPoint());
         if (reflectiveColor.Length() > 0) { // reflective material
             Ray reflectiveRay = {hit.getIntersectionPoint() - ray.getDirection() * 0.001f,
                                  mirrorDirection(hit.getNormal(), ray.getDirection())};
@@ -181,10 +181,10 @@ Vec3f RayTracer::traceRayFast(Ray &ray, float tmin, int bounces, float weight, f
         }
 
         // refractions
-        auto refractiveColor = material->getTransparentColor();
+        auto refractiveColor = material->getTransparentColor(hit.getIntersectionPoint());
         if (refractiveColor.Length() > 0) { // refractive material
             auto realNormal = hit.getNormal(), incoming = ray.getDirection();
-            auto index_i = indexOfRefraction, index_t = material->getIndexOfRefraction();
+            auto index_i = indexOfRefraction, index_t = material->getIndexOfRefraction(hit.getIntersectionPoint());
             if (shadeBack && realNormal.Dot3(incoming) > 0) { // intersection inside the object, reverse normal
                 realNormal.Negate();
                 index_t = 1;

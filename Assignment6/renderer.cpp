@@ -43,7 +43,7 @@ void ColorRenderer::Render() {
             auto interRes = scene->getGroup()->intersect(ray, hit, camera->getTMin());
             if (!interRes) continue;
             // has intersection
-            image->SetPixel(i, j, hit.getMaterial()->getDiffuseColor());
+            image->SetPixel(i, j, hit.getMaterial()->getDiffuseColor(hit.getIntersectionPoint()));
         }
     }
 }
@@ -87,7 +87,7 @@ void DiffuseRenderer::Render() {
                 light->getIllumination(hit.getIntersectionPoint(), lightDir, lightCol, distanceToLight);
                 color += material->Shade(ray, hit, lightDir, lightCol);
             }
-            color += scene->getAmbientLight() * material->getDiffuseColor();
+            color += scene->getAmbientLight() * material->getDiffuseColor(hit.getIntersectionPoint());
             image->SetPixel(i, j, color);
         }
     }
