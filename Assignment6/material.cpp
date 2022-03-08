@@ -121,7 +121,7 @@ Vec3f Wood::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight, const
         float oct = powf(2, i);
         N += PerlinNoise::noise(p.x() * oct, p.y() * oct, p.z() * oct) / oct;
     }
-    float M = sin(frequency * (p.x() * p.x() + p.y() * p.y()) + amplitude * N);
+    float M = sin(frequency * sqrt(p.x() * p.x() + p.y() * p.y()) + amplitude * N);
     M = (M + 1) / 2; // map [-1, 1] to [0, 1]
 
     auto color1 = mat1->Shade(ray, hit, dirToLight, lightColor),
