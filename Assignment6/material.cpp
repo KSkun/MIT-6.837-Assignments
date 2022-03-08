@@ -87,11 +87,10 @@ Vec3f Noise::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight, cons
     auto p = hit.getIntersectionPoint();
     m->Transform(p);
     float N = 0;
-    for (int i = 1; i <= octaves; i++) {
+    for (int i = 0; i < octaves; i++) {
         float oct = powf(2, i);
         N += PerlinNoise::noise(p.x() * oct, p.y() * oct, p.z() * oct) / oct;
     }
-    N = std::max(std::min(N, 1.0f), 0.0f); // clamp N to [0, 1]
 
     auto color1 = mat1->Shade(ray, hit, dirToLight, lightColor),
             color2 = mat2->Shade(ray, hit, dirToLight, lightColor);
@@ -102,7 +101,7 @@ Vec3f Marble::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight, con
     auto p = hit.getIntersectionPoint();
     m->Transform(p);
     float N = 0;
-    for (int i = 1; i <= octaves; i++) {
+    for (int i = 0; i < octaves; i++) {
         float oct = powf(2, i);
         N += PerlinNoise::noise(p.x() * oct, p.y() * oct, p.z() * oct) / oct;
     }
@@ -118,7 +117,7 @@ Vec3f Wood::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight, const
     auto p = hit.getIntersectionPoint();
     m->Transform(p);
     float N = 0;
-    for (int i = 1; i <= octaves; i++) {
+    for (int i = 0; i < octaves; i++) {
         float oct = powf(2, i);
         N += PerlinNoise::noise(p.x() * oct, p.y() * oct, p.z() * oct) / oct;
     }
