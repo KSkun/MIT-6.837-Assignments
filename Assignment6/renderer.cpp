@@ -43,7 +43,7 @@ void ColorRenderer::Render() {
             auto interRes = scene->getGroup()->intersect(ray, hit, camera->getTMin());
             if (!interRes) continue;
             // has intersection
-            image->SetPixel(i, j, hit.getMaterial()->getDiffuseColor());
+            image->SetPixel(i, j, hit.getMaterial()->getDiffuseColor(hit.getIntersectionPoint()));
         }
     }
 }
@@ -87,7 +87,7 @@ void DiffuseRenderer::Render() {
                 light->getIllumination(hit.getIntersectionPoint(), lightDir, lightCol, distanceToLight);
                 color += material->Shade(ray, hit, lightDir, lightCol);
             }
-            color += scene->getAmbientLight() * material->getDiffuseColor();
+            color += scene->getAmbientLight() * material->getDiffuseColor(hit.getIntersectionPoint());
             image->SetPixel(i, j, color);
         }
     }
@@ -107,8 +107,8 @@ void RayTraceRenderer::Render() {
 
     for (int i = 0; i < image->Width(); i++) {
         for (int j = 0; j < image->Height(); j++) {
-            auto ray = camera->generateRay(Vec2f((float) i / image->Width(),
-                                                 (float) j / image->Height()));
+            auto ray = camera->generateRay(Vec2f((i - image->Width() / 2.0f) / image->Width(),
+                                                 (j - image->Height() / 2.0f) / image->Width()));
             Hit hit;
             Vec3f color;
             if (gridNX != -1) {

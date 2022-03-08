@@ -29,14 +29,14 @@ void PhongMaterial::glSetMaterial() const {
     GLfloat one[4] = {1.0, 1.0, 1.0, 1.0};
     GLfloat zero[4] = {0.0, 0.0, 0.0, 0.0};
     GLfloat specular[4] = {
-            getSpecularColor().r(),
-            getSpecularColor().g(),
-            getSpecularColor().b(),
+            specularColor.r(),
+            specularColor.g(),
+            specularColor.b(),
             1.0};
     GLfloat diffuse[4] = {
-            getDiffuseColor().r(),
-            getDiffuseColor().g(),
-            getDiffuseColor().b(),
+            diffuseColor.r(),
+            diffuseColor.g(),
+            diffuseColor.b(),
             1.0};
 
     // NOTE: GL uses the Blinn Torrance version of Phong...
@@ -80,26 +80,17 @@ void PhongMaterial::glSetMaterial() const {
 }
 
 Vec3f Checkerboard::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight, const Vec3f &lightColor) const {
-    auto p = hit.getIntersectionPoint();
-    m->Transform(p);
-    auto px = (int) floor(p.x()), py = (int) floor(p.y()), pz = (int) floor(p.z());
-    auto oddCount = (px % 2) + (py % 2) + (pz % 2);
-    if (oddCount % 2 == 0) {
-        return mat1->Shade(ray, hit, dirToLight, lightColor);
-    } else {
-        return mat2->Shade(ray, hit, dirToLight, lightColor);
-    }
+    return getMaterialByPoint(hit.getIntersectionPoint())->Shade(ray, hit, dirToLight, lightColor);
 }
 
 Vec3f Noise::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight, const Vec3f &lightColor) const {
     auto p = hit.getIntersectionPoint();
     m->Transform(p);
     float N = 0;
-    for (int i = 1; i <= octaves; i++) {
+    for (int i = 0; i < octaves; i++) {
         float oct = powf(2, i);
         N += PerlinNoise::noise(p.x() * oct, p.y() * oct, p.z() * oct) / oct;
     }
-    N = std::max(std::min(N, 1.0f), 0.0f); // clamp N to [0, 1]
 
     auto color1 = mat1->Shade(ray, hit, dirToLight, lightColor),
             color2 = mat2->Shade(ray, hit, dirToLight, lightColor);
@@ -110,7 +101,7 @@ Vec3f Marble::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight, con
     auto p = hit.getIntersectionPoint();
     m->Transform(p);
     float N = 0;
-    for (int i = 1; i <= octaves; i++) {
+    for (int i = 0; i < octaves; i++) {
         float oct = powf(2, i);
         N += PerlinNoise::noise(p.x() * oct, p.y() * oct, p.z() * oct) / oct;
     }
@@ -126,11 +117,11 @@ Vec3f Wood::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight, const
     auto p = hit.getIntersectionPoint();
     m->Transform(p);
     float N = 0;
-    for (int i = 1; i <= octaves; i++) {
+    for (int i = 0; i < octaves; i++) {
         float oct = powf(2, i);
         N += PerlinNoise::noise(p.x() * oct, p.y() * oct, p.z() * oct) / oct;
     }
-    float M = sin(frequency * (p.x() * p.x() + p.y() * p.y()) + amplitude * N);
+    float M = sin(frequency * sqrt(p.x() * p.x() + p.y() * p.y()) + amplitude * N);
     M = (M + 1) / 2; // map [-1, 1] to [0, 1]
 
     auto color1 = mat1->Shade(ray, hit, dirToLight, lightColor),
