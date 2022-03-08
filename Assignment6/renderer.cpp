@@ -107,8 +107,8 @@ void RayTraceRenderer::Render() {
 
     for (int i = 0; i < image->Width(); i++) {
         for (int j = 0; j < image->Height(); j++) {
-            auto ray = camera->generateRay(Vec2f((float) i / image->Width(),
-                                                 (float) j / image->Height()));
+            auto ray = camera->generateRay(Vec2f((i - image->Width() / 2.0f) / image->Width(),
+                                                 (j - image->Height() / 2.0f) / image->Width()));
             Hit hit;
             Vec3f color;
             if (gridNX != -1) {

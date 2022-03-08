@@ -124,7 +124,7 @@ void OrthographicCamera::rotateCamera(float rx, float ry) {
 
 Ray PerspectiveCamera::generateRay(Vec2f point) {
     auto pScr = center + direction * screenDist +
-                horizontal * (point.x() - 0.5f) * side + up * (point.y() - 0.5f) * side;
+                horizontal * point.x() * side + up * point.y() * side;
     auto dir = pScr - center;
     dir.Normalize();
     return {center, dir};
