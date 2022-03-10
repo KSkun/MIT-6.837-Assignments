@@ -15,7 +15,6 @@ public:
 
     virtual ~Filter() = default;
 
-protected:
     virtual float getWeight(float x, float y) = 0;
 
     virtual int getSupportRadius() = 0;
@@ -25,7 +24,6 @@ class BoxFilter : public Filter {
 public:
     explicit BoxFilter(float radius) : radius(radius) {}
 
-protected:
     float getWeight(float x, float y) override;
 
     int getSupportRadius() override {
@@ -39,7 +37,6 @@ class TentFilter : public Filter {
 public:
     explicit TentFilter(float radius) : radius(radius) {}
 
-protected:
     float getWeight(float x, float y) override;
 
     int getSupportRadius() override {
@@ -53,7 +50,6 @@ class GaussianFilter : public Filter {
 public:
     explicit GaussianFilter(float sigma) : sigma(sigma) {}
 
-protected:
     float getWeight(float x, float y) override;
 
     int getSupportRadius() override {
