@@ -6,7 +6,6 @@
 #include <unordered_map>
 
 #include "grid.h"
-#include "global.h"
 #include "rayTree.h"
 #include "raytracing_stats.h"
 

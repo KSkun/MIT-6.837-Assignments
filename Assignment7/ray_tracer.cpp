@@ -8,8 +8,6 @@
 #include "rayTree.h"
 #include "raytracing_stats.h"
 
-const float DEF_INDEX_OF_REFRACTION = 1;
-
 Vec3f mirrorDirection(const Vec3f &normal, const Vec3f &incoming) {
     Vec3f result = incoming - 2 * incoming.Dot3(normal) * normal;
     result.Normalize();
