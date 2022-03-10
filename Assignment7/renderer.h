@@ -79,4 +79,12 @@ public:
     void Render() override;
 };
 
+class SupersamplingRenderer : public Renderer {
+public:
+    explicit SupersamplingRenderer(Image *image = nullptr, SceneParser *scene = nullptr) :
+            Renderer(image, scene) {}
+
+    void Render() override;
+};
+
 #endif //ASSIGNMENT2_RENDERER_H

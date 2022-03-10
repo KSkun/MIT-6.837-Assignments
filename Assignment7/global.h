@@ -19,10 +19,14 @@ extern int height;
 extern int thetaSteps, phiSteps;
 extern int maxBounces;
 extern int gridNX, gridNY, gridNZ;
+extern int numSamples;
+extern int sampleZoom;
 
 extern float depthMin;
 extern float depthMax;
 extern float cutoffWeight;
+
+extern char *samplesFile;
 
 int fcmp(float f);
 

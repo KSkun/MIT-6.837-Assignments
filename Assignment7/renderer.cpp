@@ -5,11 +5,11 @@
 #include "renderer.h"
 #include "global.h"
 #include "camera.h"
-#include "group.h"
-#include "material.h"
 #include "light.h"
 #include "ray_tracer.h"
 #include "raytracing_stats.h"
+#include "sampler.h"
+#include "film.h"
 
 void DepthRenderer::Render() {
     assert(image);
@@ -126,4 +126,50 @@ void RayTraceRenderer::Render() {
     }
 
     delete tracer;
+}
+
+void SupersamplingRenderer::Render() {
+    Renderer::Render(); // preparations
+    auto tracer = new RayTracer(scene, maxBounces, cutoffWeight);
+    auto sampler = new RandomSampler(numSamples);
+    auto film = new Film(image->Width(), image->Height(), numSamples);
+    if (gridNX != -1) {
+        auto grid = tracer->getGrid();
+        auto bbox = grid->getBoundingBox();
+        auto[nx, ny, nz] = grid->getSize();
+        RayTracingStats::Initialize(width, height, bbox, nx, ny, nz);
+    } else {
+        RayTracingStats::Initialize(width, height, group->getBoundingBox(), 1, 1, 1);
+    }
+
+    for (int i = 0; i < image->Width(); i++) {
+        for (int j = 0; j < image->Height(); j++) {
+            for (int k = 0; k < numSamples; k++) {
+                auto offset = sampler->getSamplePosition(k);
+                auto ray = camera->generateRay(Vec2f((i + offset.x() - image->Width() / 2.0f) / image->Width(),
+                                                     (j + offset.y() - image->Height() / 2.0f) / image->Width()));
+                Hit hit;
+                Vec3f color;
+                if (gridNX != -1) {
+                    // grid accelerated ray tracing
+                    color = tracer->traceRayFast(ray, camera->getTMin(), 0, 1, 1, hit);
+                } else {
+                    color = tracer->traceRay(ray, camera->getTMin(), 0, 1, 1, hit);
+                }
+//                image->SetPixel(i, j, color);
+                film->setSample(i, j, k, offset, color);
+            }
+        }
+    }
+
+    if (samplesFile != nullptr) {
+        film->renderSamples(samplesFile, sampleZoom);
+    }
+
+    if (stats) {
+        RayTracingStats::PrintStatistics();
+    }
+
+    delete tracer;
+    delete sampler;
 }

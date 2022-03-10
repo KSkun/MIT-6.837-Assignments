@@ -124,6 +124,17 @@ int main(int argc, char *argv[]) {
             visualizeGrid = true;
         } else if (!strcmp(argv[i], "-stats")) {
             stats = true;
+        } else if (!strcmp(argv[i], "-random_samples")) {
+            i++;
+            assert(i < argc);
+            numSamples = atoi(argv[i]);
+        } else if (!strcmp(argv[i], "-random_samples")) {
+            i++;
+            assert(i < argc);
+            samplesFile = argv[i];
+            i++;
+            assert(i < argc);
+            sampleZoom = atoi(argv[i]);
         } else {
             printf("whoops error with command line argument %d: '%s'\n", i, argv[i]);
             assert(0);
