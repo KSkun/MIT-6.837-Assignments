@@ -27,7 +27,7 @@ public:
     float getWeight(float x, float y) override;
 
     int getSupportRadius() override {
-        return floor(radius);
+        return ceil(radius - 0.5f);
     }
 
     float radius;
@@ -40,7 +40,7 @@ public:
     float getWeight(float x, float y) override;
 
     int getSupportRadius() override {
-        return floor(radius);
+        return ceil(radius - 0.5f);
     }
 
     float radius;
@@ -53,7 +53,7 @@ public:
     float getWeight(float x, float y) override;
 
     int getSupportRadius() override {
-        return floor(2 * sigma);
+        return ceil(2 * sigma - 0.5f);
     }
 
     float sigma;
