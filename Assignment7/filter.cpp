@@ -10,7 +10,9 @@ Vec3f Filter::getColor(int i, int j, Film *film) {
     Vec3f color = {0, 0, 0};
     float weightSum = 0;
     for (int offX = -r; offX <= r; offX++) {
+        if (i + offX < 0 || i + offX >= film->getWidth()) continue;
         for (int offY = -r; offY <= r; offY++) {
+            if (j + offY < 0 || j + offY >= film->getHeight()) continue;
             for (int k = 0; k < film->getNumSamples(); k++) {
                 auto sample = film->getSample(i + offX, j + offY, k);
                 auto pos = sample.getPosition();
