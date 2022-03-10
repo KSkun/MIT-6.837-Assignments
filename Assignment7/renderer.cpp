@@ -10,6 +10,7 @@
 #include "raytracing_stats.h"
 #include "sampler.h"
 #include "film.h"
+#include "filter.h"
 
 void DepthRenderer::Render() {
     assert(image);
@@ -130,12 +131,22 @@ void RayTraceRenderer::Render() {
 
 void SupersamplingRenderer::Render() {
     Renderer::Render(); // preparations
+
     auto tracer = new RayTracer(scene, maxBounces, cutoffWeight);
-    Sampler *sampler;
+
+    Sampler *sampler = nullptr;
+    assert(randomSamples || uniformSamples || jitteredSamples);
     if (randomSamples) sampler = new RandomSampler(numSamples);
     if (uniformSamples) sampler = new UniformSampler(numSamples);
     if (jitteredSamples) sampler = new JitteredSampler(numSamples);
+
+    Filter *filter = nullptr;
+    if (boxFilter) filter = new BoxFilter(filterParam);
+    if (tentFilter) filter = new TentFilter(filterParam);
+    if (gaussianFilter) filter = new GaussianFilter(filterParam);
+
     auto film = new Film(image->Width(), image->Height(), numSamples);
+
     if (gridNX != -1) {
         auto grid = tracer->getGrid();
         auto bbox = grid->getBoundingBox();
@@ -171,7 +182,10 @@ void SupersamplingRenderer::Render() {
 
     for (int i = 0; i < image->Width(); i++) {
         for (int j = 0; j < image->Height(); j++) {
-            // TODO filter the samples and get pixel color
+            Vec3f color;
+            if (filter != nullptr) color = filter->getColor(i, j, film);
+            else color = film->getSample(i, j, 0).getColor();
+            image->SetPixel(i, j, color);
         }
     }
 

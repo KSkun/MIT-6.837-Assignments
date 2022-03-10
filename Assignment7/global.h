@@ -14,6 +14,7 @@ extern bool shadows;
 extern bool visualizeGrid;
 extern bool stats;
 extern bool randomSamples, uniformSamples, jitteredSamples;
+extern bool boxFilter, tentFilter, gaussianFilter;
 
 extern int width;
 extern int height;
@@ -26,6 +27,7 @@ extern int sampleZoom;
 extern float depthMin;
 extern float depthMax;
 extern float cutoffWeight;
+extern float filterParam;
 
 extern char *samplesFile;
 

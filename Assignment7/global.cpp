@@ -15,6 +15,7 @@ bool shadows = false;
 bool visualizeGrid = false;
 bool stats = false;
 bool randomSamples = false, uniformSamples = false, jitteredSamples = false;
+bool boxFilter = false, tentFilter = false, gaussianFilter = false;
 
 int width = 100;
 int height = 100;
@@ -27,6 +28,7 @@ int sampleZoom = 1;
 float depthMin = 0;
 float depthMax = 1;
 float cutoffWeight = 0;
+float filterParam;
 
 char *samplesFile = nullptr;
 

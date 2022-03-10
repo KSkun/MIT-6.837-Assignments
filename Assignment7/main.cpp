@@ -146,6 +146,21 @@ int main(int argc, char *argv[]) {
             i++;
             assert(i < argc);
             sampleZoom = atoi(argv[i]);
+        } else if (!strcmp(argv[i], "-box_filter")) {
+            boxFilter = true;
+            i++;
+            assert(i < argc);
+            filterParam = atof(argv[i]);
+        } else if (!strcmp(argv[i], "-tent_filter")) {
+            tentFilter = true;
+            i++;
+            assert(i < argc);
+            filterParam = atof(argv[i]);
+        } else if (!strcmp(argv[i], "-gaussian_filter")) {
+            gaussianFilter = true;
+            i++;
+            assert(i < argc);
+            filterParam = atof(argv[i]);
         } else {
             printf("whoops error with command line argument %d: '%s'\n", i, argv[i]);
             assert(0);
