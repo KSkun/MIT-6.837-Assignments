@@ -13,6 +13,7 @@ extern bool gui;
 extern bool shadows;
 extern bool visualizeGrid;
 extern bool stats;
+extern bool randomSamples, uniformSamples, jitteredSamples;
 
 extern int width;
 extern int height;

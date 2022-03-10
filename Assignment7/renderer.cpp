@@ -131,7 +131,10 @@ void RayTraceRenderer::Render() {
 void SupersamplingRenderer::Render() {
     Renderer::Render(); // preparations
     auto tracer = new RayTracer(scene, maxBounces, cutoffWeight);
-    auto sampler = new RandomSampler(numSamples);
+    Sampler *sampler;
+    if (randomSamples) sampler = new RandomSampler(numSamples);
+    if (uniformSamples) sampler = new UniformSampler(numSamples);
+    if (jitteredSamples) sampler = new JitteredSampler(numSamples);
     auto film = new Film(image->Width(), image->Height(), numSamples);
     if (gridNX != -1) {
         auto grid = tracer->getGrid();
@@ -164,6 +167,12 @@ void SupersamplingRenderer::Render() {
 
     if (samplesFile != nullptr) {
         film->renderSamples(samplesFile, sampleZoom);
+    }
+
+    for (int i = 0; i < image->Width(); i++) {
+        for (int j = 0; j < image->Height(); j++) {
+            // TODO filter the samples and get pixel color
+        }
     }
 
     if (stats) {

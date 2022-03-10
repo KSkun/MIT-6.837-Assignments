@@ -125,10 +125,21 @@ int main(int argc, char *argv[]) {
         } else if (!strcmp(argv[i], "-stats")) {
             stats = true;
         } else if (!strcmp(argv[i], "-random_samples")) {
+            randomSamples = true;
             i++;
             assert(i < argc);
             numSamples = atoi(argv[i]);
-        } else if (!strcmp(argv[i], "-random_samples")) {
+        } else if (!strcmp(argv[i], "-uniform_samples")) {
+            uniformSamples = true;
+            i++;
+            assert(i < argc);
+            numSamples = atoi(argv[i]);
+        } else if (!strcmp(argv[i], "-jittered_samples")) {
+            jitteredSamples = true;
+            i++;
+            assert(i < argc);
+            numSamples = atoi(argv[i]);
+        } else if (!strcmp(argv[i], "-render_samples")) {
             i++;
             assert(i < argc);
             samplesFile = argv[i];
@@ -139,6 +150,11 @@ int main(int argc, char *argv[]) {
             printf("whoops error with command line argument %d: '%s'\n", i, argv[i]);
             assert(0);
         }
+    }
+    // default sampler settings
+    if (!randomSamples && !uniformSamples && !jitteredSamples) {
+        uniformSamples = true;
+        numSamples = 1;
     }
 
     parser = new SceneParser(input_file);

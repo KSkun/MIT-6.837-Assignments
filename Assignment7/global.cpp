@@ -14,6 +14,7 @@ bool gui = false;
 bool shadows = false;
 bool visualizeGrid = false;
 bool stats = false;
+bool randomSamples = false, uniformSamples = false, jitteredSamples = false;
 
 int width = 100;
 int height = 100;
