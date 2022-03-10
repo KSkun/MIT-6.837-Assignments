@@ -29,7 +29,7 @@ Vec3f Filter::getColor(int i, int j, Film *film) {
 }
 
 float BoxFilter::getWeight(float x, float y) {
-    auto dist = sqrt(x * x + y * y);
+    auto dist = std::max(abs(x), abs(y));
     if (dist - EPSILON > radius) return 0;
     return 1;
 }
@@ -42,6 +42,6 @@ float TentFilter::getWeight(float x, float y) {
 
 float GaussianFilter::getWeight(float x, float y) {
     auto dist = sqrt(x * x + y * y);
-    if (dist - EPSILON > sigma * 2) return 0;
+//    if (dist - EPSILON > sigma * 2) return 0;
     return exp(-dist * dist / (2 * sigma * sigma));
 }
