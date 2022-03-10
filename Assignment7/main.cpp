@@ -23,10 +23,10 @@ char *normals_file = nullptr;
 char *depth_file = nullptr;
 
 void Render() {
+    auto colorImg = new Image(width, height);
+    auto colorRenderer = new SupersamplingRenderer(colorImg, parser);
+    colorRenderer->Render();
     if (output_file) {
-        auto colorImg = new Image(width, height);
-        auto colorRenderer = new RayTraceRenderer(colorImg, parser);
-        colorRenderer->Render();
         colorImg->SaveTGA(output_file);
     }
 //    if (depth_file) {
