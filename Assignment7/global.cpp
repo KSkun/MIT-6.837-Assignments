@@ -24,6 +24,7 @@ int maxBounces = 1;
 int gridNX = -1, gridNY = -1, gridNZ = -1;
 int numSamples = 1;
 int sampleZoom = 1;
+int filterZoom = 1;
 
 float depthMin = 0;
 float depthMax = 1;
@@ -31,6 +32,7 @@ float cutoffWeight = 0;
 float filterParam;
 
 char *samplesFile = nullptr;
+char *filterFile = nullptr;
 
 int fcmp(float f) {
     if (std::fabs(f) < EPSILON) return 0;

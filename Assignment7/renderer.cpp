@@ -189,10 +189,15 @@ void SupersamplingRenderer::Render() {
         }
     }
 
+    if (filterFile != nullptr) {
+        film->renderFilter(filterFile, filterZoom, filter);
+    }
+
     if (stats) {
         RayTracingStats::PrintStatistics();
     }
 
     delete tracer;
     delete sampler;
+    delete filter;
 }

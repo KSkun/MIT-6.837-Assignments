@@ -23,6 +23,7 @@ extern int maxBounces;
 extern int gridNX, gridNY, gridNZ;
 extern int numSamples;
 extern int sampleZoom;
+extern int filterZoom;
 
 extern float depthMin;
 extern float depthMax;
@@ -30,6 +31,7 @@ extern float cutoffWeight;
 extern float filterParam;
 
 extern char *samplesFile;
+extern char *filterFile;
 
 int fcmp(float f);
 

@@ -14,6 +14,8 @@ class Sampler {
 public:
     explicit Sampler(int numSamples) : numSamples(numSamples) {}
 
+    virtual ~Sampler() = default;
+
     virtual Vec2f getSamplePosition(int n) = 0;
 
 protected:

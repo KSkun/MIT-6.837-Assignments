@@ -161,6 +161,13 @@ int main(int argc, char *argv[]) {
             i++;
             assert(i < argc);
             filterParam = atof(argv[i]);
+        } else if (!strcmp(argv[i], "-render_filter")) {
+            i++;
+            assert(i < argc);
+            filterFile = argv[i];
+            i++;
+            assert(i < argc);
+            filterZoom = atoi(argv[i]);
         } else {
             printf("whoops error with command line argument %d: '%s'\n", i, argv[i]);
             assert(0);

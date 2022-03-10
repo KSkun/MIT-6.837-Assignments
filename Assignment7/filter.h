@@ -13,6 +13,8 @@ class Filter {
 public:
     Vec3f getColor(int i, int j, Film *film);
 
+    virtual ~Filter() = default;
+
 protected:
     virtual float getWeight(float x, float y) = 0;
 
