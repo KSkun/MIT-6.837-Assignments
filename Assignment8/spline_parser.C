@@ -1,7 +1,7 @@
 #include "spline_parser.h"
 #include "spline.h"
 #include "curve.h"
-#include "surface.h"
+//#include "surface.h"
 #include "triangle_mesh.h"
 #include "arg_parser.h"
 
@@ -20,7 +20,7 @@ SplineParser::SplineParser(const char *spline_file) {
   getToken(token);
   assert (!strcmp(token,"num_splines"));
   num_splines = readInt();
-  splines = new (Spline*)[num_splines];
+  splines = new Spline*[num_splines];
 
   // read the splines
   for (int i = 0; i < num_splines; i++) {
@@ -51,9 +51,9 @@ Spline* SplineParser::ParseSpline() {
   } else if (!strcmp(token,"bspline")) {
     answer = ParseBSplineCurve();
   } else if (!strcmp(token,"surface_of_revolution")) {
-    answer = ParseSurfaceOfRevolution();
+//    answer = ParseSurfaceOfRevolution();
   } else if (!strcmp(token,"bezier_patch")) {
-    answer = ParseBezierPatch();
+//    answer = ParseBezierPatch();
   } else {
     printf ("ERROR unknown spline type %s\n", token);
     assert(0);
@@ -91,33 +91,33 @@ Curve* SplineParser::ParseBSplineCurve() {
   return answer;
 }
 
-Surface* SplineParser::ParseSurfaceOfRevolution() {
-  // a surface of revolution is just a curve spun around 
-  // the y axis (x = 0, z = 0)
-  char token[MAX_PARSER_TOKEN_LENGTH];
-  getToken(token);
-  Curve *c = NULL;
-  if (!strcmp(token,"bezier")) {
-    c = ParseBezierCurve();
-  } else if (!strcmp(token,"bspline")) {
-    c = ParseBSplineCurve();
-  } else {
-    printf ("ERROR unknown curve type %s\n", token);
-  }
-  assert (c != NULL);
-  Surface *answer = new SurfaceOfRevolution(c);
-  return answer;
-}
-
-Surface* SplineParser::ParseBezierPatch() {
-  // a bezier patch is just a list of 16 vertices
-  BezierPatch *answer = new BezierPatch();
-  for (int i = 0; i < 16; i++) {
-    Vec3f v = readVec3f();
-    answer->set(i,v);
-  }
-  return answer;
-}
+//Surface* SplineParser::ParseSurfaceOfRevolution() {
+//  // a surface of revolution is just a curve spun around
+//  // the y axis (x = 0, z = 0)
+//  char token[MAX_PARSER_TOKEN_LENGTH];
+//  getToken(token);
+//  Curve *c = NULL;
+//  if (!strcmp(token,"bezier")) {
+//    c = ParseBezierCurve();
+//  } else if (!strcmp(token,"bspline")) {
+//    c = ParseBSplineCurve();
+//  } else {
+//    printf ("ERROR unknown curve type %s\n", token);
+//  }
+//  assert (c != NULL);
+//  Surface *answer = new SurfaceOfRevolution(c);
+//  return answer;
+//}
+//
+//Surface* SplineParser::ParseBezierPatch() {
+//  // a bezier patch is just a list of 16 vertices
+//  BezierPatch *answer = new BezierPatch();
+//  for (int i = 0; i < 16; i++) {
+//    Vec3f v = readVec3f();
+//    answer->set(i,v);
+//  }
+//  return answer;
+//}
 
 // ====================================================================
 
