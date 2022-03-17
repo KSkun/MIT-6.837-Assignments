@@ -9,8 +9,8 @@ add_executable(${PROJECT_NAME} ${SRC})
 add_definitions(-DNOMINMAX -D_USE_MATH_DEFINES)
 
 # OpenGL dependencies
-#set(GLUT_ROOT_PATH glut)
-#find_package(OpenGL REQUIRED)
-#find_package(GLUT REQUIRED)
-#include_directories(${OPENGL_INCLUDE_DIR} ${GLUT_INCLUDE_DIR})
-#target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
+set(GLUT_ROOT_PATH glut)
+find_package(OpenGL REQUIRED)
+find_package(GLUT REQUIRED)
+include_directories(${OPENGL_INCLUDE_DIR} ${GLUT_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
