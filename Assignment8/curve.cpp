@@ -39,12 +39,32 @@ void Curve::Paint(ArgParser *args) {
     glEnd();
 }
 
+//Vec2f BezierCurve::evaluate(float t) {
+//    assert(getNumVertices() == 4);
+//    float tm = 1 - t;
+//    auto p = tm * tm * tm * vertices[0] + 3 * t * tm * tm * vertices[1] +
+//             3 * t * t * tm * vertices[2] + t * t * t * vertices[3];
+//    return {p.x(), p.y()};
+//}
+
 Vec2f BezierCurve::evaluate(float t) {
-    assert(getNumVertices() == 4);
-    float tm = 1 - t;
-    auto p = tm * tm * tm * vertices[0] + 3 * t * tm * tm * vertices[1] +
-             3 * t * t * tm * vertices[2] + t * t * t * vertices[3];
-    return {p.x(), p.y()};
+    std::vector<Vec2f> v1, v2;
+    v1.reserve(vertices.size());
+    for (const auto &p : vertices) {
+        v1.emplace_back(p.x(), p.y());
+    }
+    while (v1.size() > 1) {
+        v2.clear(); v2.reserve(v1.size() - 1);
+        for (int j = 0; j < v1.size() - 1; j++) {
+            auto p1 = v1[j], p2 = v1[j + 1];
+            p1.Scale(1 - t, 1 - t);
+            p2.Scale(t, t);
+            p1 += p2;
+            v2.push_back(p1);
+        }
+        v1 = v2;
+    }
+    return v1[0];
 }
 
 Vec2f BSplineCurve::evaluate(float t) {
