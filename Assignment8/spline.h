@@ -12,6 +12,10 @@
 
 class Spline {
 public:
+    explicit Spline(int numVertices) {
+        vertices.resize(numVertices);
+    }
+
     // FOR VISUALIZATION
     virtual void Paint(ArgParser *args) = 0;
 
@@ -19,6 +23,10 @@ public:
     virtual void OutputBezier(FILE *file) = 0;
 
     virtual void OutputBSpline(FILE *file) = 0;
+
+    virtual void set(int i, const Vec3f &p) {
+        vertices[i] = p;
+    }
 
     // FOR CONTROL POINT PICKING
     virtual int getNumVertices() {
@@ -43,7 +51,9 @@ public:
     }
 
     // FOR GENERATING TRIANGLES
-    virtual TriangleMesh *OutputTriangles(ArgParser *args) {}
+    virtual TriangleMesh *OutputTriangles(ArgParser *args) {
+        return nullptr;
+    }
 
 protected:
     std::vector<Vec3f> vertices;
