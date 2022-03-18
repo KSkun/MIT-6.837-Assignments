@@ -9,8 +9,8 @@
 
 void Curve::Paint(ArgParser *args) {
     // draw control polygon
-    glBegin(GL_LINE_STRIP);
     glLineWidth(1);
+    glBegin(GL_LINE_STRIP);
     glColor3f(0, 0, 1);
     for (const auto &p: vertices) {
         glVertex2f(p.x(), p.y());
@@ -18,8 +18,8 @@ void Curve::Paint(ArgParser *args) {
     glEnd();
 
     // draw curve line
+    glLineWidth(3);
     glBegin(GL_LINE_STRIP);
-    glLineWidth(2);
     glColor3f(0, 1, 0);
     float step = 1.0f / args->curve_tessellation, t = step / 2.0f;
     for (int i = 0; i < args->curve_tessellation; i++) {
@@ -30,8 +30,8 @@ void Curve::Paint(ArgParser *args) {
     glEnd();
 
     // draw control points
+    glPointSize(5);
     glBegin(GL_POINTS);
-    glPointSize(3);
     glColor3f(1, 0, 0);
     for (const auto &p: vertices) {
         glVertex2f(p.x(), p.y());
