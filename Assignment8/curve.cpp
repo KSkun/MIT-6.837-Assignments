@@ -21,8 +21,8 @@ void Curve::Paint(ArgParser *args) {
     glLineWidth(3);
     glBegin(GL_LINE_STRIP);
     glColor3f(0, 1, 0);
-    float step = 1.0f / args->curve_tessellation, t = step / 2.0f;
-    for (int i = 0; i < args->curve_tessellation; i++) {
+    float step = 1.0f / args->curve_tessellation, t = 0;
+    for (int i = 0; i <= args->curve_tessellation; i++) {
         auto p = evaluate(t);
         t += step;
         glVertex2f(p.x(), p.y());
