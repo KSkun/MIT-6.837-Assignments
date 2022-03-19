@@ -21,11 +21,14 @@ void Curve::Paint(ArgParser *args) {
     glLineWidth(3);
     glBegin(GL_LINE_STRIP);
     glColor3f(0, 1, 0);
-    float step = 1.0f / args->curve_tessellation, t = 0;
-    for (int i = 0; i <= args->curve_tessellation; i++) {
-        auto p = evaluate(t);
-        t += step;
-        glVertex2f(p.x(), p.y());
+    for (int i = 0; i < vertices.size(); i += 3) {
+        if (i == vertices.size() - 1) break;
+        float step = 1.0f / args->curve_tessellation, t = 0;
+        for (int j = 0; j <= args->curve_tessellation; j++) {
+            auto p = evaluate(i, min((int) vertices.size() - i, 4), t);
+            t += step;
+            glVertex2f(p.x(), p.y());
+        }
     }
     glEnd();
 
@@ -47,11 +50,11 @@ void Curve::Paint(ArgParser *args) {
 //    return {p.x(), p.y()};
 //}
 
-Vec2f BezierCurve::evaluate(float t) {
+Vec2f BezierCurve::evaluate(int index, int num, float t) {
     std::vector<Vec2f> v1, v2;
     v1.reserve(vertices.size());
-    for (const auto &p : vertices) {
-        v1.emplace_back(p.x(), p.y());
+    for (int i = index; i < index + num; i++) {
+        v1.emplace_back(vertices[i].x(), vertices[i].y());
     }
     while (v1.size() > 1) {
         v2.clear(); v2.reserve(v1.size() - 1);
@@ -67,7 +70,7 @@ Vec2f BezierCurve::evaluate(float t) {
     return v1[0];
 }
 
-Vec2f BSplineCurve::evaluate(float t) {
+Vec2f BSplineCurve::evaluate(int index, int num, float t) {
     assert(getNumVertices() == 4);
     float b0 = (1 - t) * (1 - t) * (1 - t) / 6,
             b1 = (3 * t * t * t - 6 * t * t + 4) / 6,
