@@ -61,4 +61,13 @@ protected:
     Curve *c;
 };
 
+class BezierPatch : public Surface {
+public:
+    BezierPatch() : Surface(16) {}
+
+    void Paint(ArgParser *args) override;
+
+    TriangleMesh *OutputTriangles(ArgParser *args) override;
+};
+
 #endif //ASSIGNMENT8_SURFACE_H

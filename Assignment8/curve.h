@@ -13,6 +13,8 @@ class Curve : public Spline {
 public:
     explicit Curve(int numVertices) : Spline(numVertices) {}
 
+    explicit Curve(std::vector<Vec3f> &vertices) : Spline(vertices) {}
+
     void Paint(ArgParser *args) override;
 
     virtual std::vector<Vec3f> tessellate(ArgParser *args) = 0;
@@ -23,7 +25,7 @@ protected:
 
 class BezierCurve : public Curve {
 public:
-    explicit BezierCurve(int numVertices) : Curve(numVertices) {
+    void initMatConvert() {
         float arrBezier[] = {
                 -1, 3, -3, 1,
                 3, -6, 3, 0,
@@ -43,6 +45,14 @@ public:
         matConvert = matBezier * matBSpline;
     }
 
+    explicit BezierCurve(int numVertices) : Curve(numVertices) {
+        initMatConvert();
+    }
+
+    explicit BezierCurve(std::vector<Vec3f> &vertices) : Curve(vertices) {
+        initMatConvert();
+    }
+
     Vec3f evaluate(int index, int num, float t);
 
     std::vector<Vec3f> tessellate(ArgParser *args) override;
@@ -54,7 +64,7 @@ public:
 
 class BSplineCurve : public Curve {
 public:
-    explicit BSplineCurve(int numVertices) : Curve(numVertices) {
+    void initMatConvert() {
         float arrBezier[] = {
                 -1, 3, -3, 1,
                 3, -6, 3, 0,
@@ -72,6 +82,14 @@ public:
         matBSpline *= 1.0f / 6;
         matBezier.Inverse();
         matConvert = matBSpline * matBezier;
+    }
+
+    explicit BSplineCurve(int numVertices) : Curve(numVertices) {
+        initMatConvert();
+    }
+
+    explicit BSplineCurve(std::vector<Vec3f> &vertices) : Curve(vertices) {
+        initMatConvert();
     }
 
     Vec3f evaluate(int index, float t);

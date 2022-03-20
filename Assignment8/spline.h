@@ -16,6 +16,8 @@ public:
         vertices.resize(numVertices);
     }
 
+    explicit Spline(std::vector<Vec3f> &vertices) : vertices(std::move(vertices)) {}
+
     // FOR VISUALIZATION
     virtual void Paint(ArgParser *args) = 0;
 

@@ -53,7 +53,7 @@ Spline* SplineParser::ParseSpline() {
   } else if (!strcmp(token,"surface_of_revolution")) {
     answer = ParseSurfaceOfRevolution();
   } else if (!strcmp(token,"bezier_patch")) {
-//    answer = ParseBezierPatch();
+    answer = ParseBezierPatch();
   } else {
     printf ("ERROR unknown spline type %s\n", token);
     assert(0);
@@ -109,15 +109,15 @@ Surface* SplineParser::ParseSurfaceOfRevolution() {
   return answer;
 }
 
-//Surface* SplineParser::ParseBezierPatch() {
-//  // a bezier patch is just a list of 16 vertices
-//  BezierPatch *answer = new BezierPatch();
-//  for (int i = 0; i < 16; i++) {
-//    Vec3f v = readVec3f();
-//    answer->set(i,v);
-//  }
-//  return answer;
-//}
+Surface* SplineParser::ParseBezierPatch() {
+  // a bezier patch is just a list of 16 vertices
+  BezierPatch *answer = new BezierPatch();
+  for (int i = 0; i < 16; i++) {
+    Vec3f v = readVec3f();
+    answer->set(i,v);
+  }
+  return answer;
+}
 
 // ====================================================================
 
