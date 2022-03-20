@@ -14,14 +14,16 @@ public:
 
     void Paint(ArgParser *args) override;
 
-    virtual Vec2f evaluate(int index, int num, float t) = 0;
+    virtual void drawCurveLine(ArgParser *args) = 0;
 };
 
 class BezierCurve : public Curve {
 public:
     explicit BezierCurve(int numVertices) : Curve(numVertices) {}
 
-    Vec2f evaluate(int index, int num, float t) override;
+    Vec2f evaluate(int index, int num, float t);
+
+    void drawCurveLine(ArgParser *args) override;
 
     void OutputBezier(FILE *file) override {}
 
@@ -32,7 +34,9 @@ class BSplineCurve : public Curve {
 public:
     explicit BSplineCurve(int numVertices) : Curve(numVertices) {}
 
-    Vec2f evaluate(int index, int num, float t) override;
+    Vec2f evaluate(int index, float t);
+
+    void drawCurveLine(ArgParser *args) override;
 
     void OutputBezier(FILE *file) override {}
 
