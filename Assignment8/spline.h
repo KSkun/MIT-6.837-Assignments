@@ -20,9 +20,9 @@ public:
     virtual void Paint(ArgParser *args) = 0;
 
     // FOR CONVERTING BETWEEN SPLINE TYPES
-    virtual void OutputBezier(FILE *file) = 0;
+    virtual void OutputBezier(FILE *file) {}
 
-    virtual void OutputBSpline(FILE *file) = 0;
+    virtual void OutputBSpline(FILE *file) {}
 
     virtual void set(int i, const Vec3f &p) {
         vertices[i] = p;

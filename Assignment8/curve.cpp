@@ -22,7 +22,10 @@ void Curve::Paint(ArgParser *args) {
     glLineWidth(3);
     glBegin(GL_LINE_STRIP);
     glColor3f(0, 1, 0);
-    drawCurveLine(args);
+    auto points = tessellate(args);
+    for (const auto &p : points) {
+        glVertex3f(p.x(), p.y(), p.z());
+    }
     glEnd();
 
     // draw control points
@@ -43,31 +46,33 @@ void Curve::Paint(ArgParser *args) {
 //    return {p.x(), p.y()};
 //}
 
-void BezierCurve::drawCurveLine(ArgParser *args) {
+std::vector<Vec3f> BezierCurve::tessellate(ArgParser *args) {
+    std::vector<Vec3f> results;
     for (int i = 0; i < vertices.size(); i += 3) {
         if (i == vertices.size() - 1) break;
         float step = 1.0f / args->curve_tessellation, t = 0;
         for (int j = 0; j <= args->curve_tessellation; j++) {
             auto p = evaluate(i, min((int) vertices.size() - i, 4), t);
             t += step;
-            glVertex2f(p.x(), p.y());
+            results.push_back(p);
         }
     }
+    return results;
 }
 
-Vec2f BezierCurve::evaluate(int index, int num, float t) {
-    std::vector<Vec2f> v1, v2;
+Vec3f BezierCurve::evaluate(int index, int num, float t) {
+    std::vector<Vec3f> v1, v2;
     v1.reserve(vertices.size());
     for (int i = index; i < index + num; i++) {
-        v1.emplace_back(vertices[i].x(), vertices[i].y());
+        v1.push_back(vertices[i]);
     }
     while (v1.size() > 1) {
         v2.clear();
         v2.reserve(v1.size() - 1);
         for (int j = 0; j < v1.size() - 1; j++) {
             auto p1 = v1[j], p2 = v1[j + 1];
-            p1.Scale(1 - t, 1 - t);
-            p2.Scale(t, t);
+            p1.Scale(1 - t, 1 - t, 1 - t);
+            p2.Scale(t, t, t);
             p1 += p2;
             v2.push_back(p1);
         }
@@ -103,19 +108,21 @@ void BezierCurve::OutputBSpline(FILE *file) {
     }
 }
 
-void BSplineCurve::drawCurveLine(ArgParser *args) {
+std::vector<Vec3f> BSplineCurve::tessellate(ArgParser *args) {
     assert(getNumVertices() >= 4);
+    std::vector<Vec3f> results;
     for (int i = 3; i < vertices.size(); i++) {
         float step = 1.0f / args->curve_tessellation, t = 0;
         for (int j = 0; j <= args->curve_tessellation; j++) {
             auto p = evaluate(i, t);
             t += step;
-            glVertex2f(p.x(), p.y());
+            results.push_back(p);
         }
     }
+    return results;
 }
 
-Vec2f BSplineCurve::evaluate(int index, float t) {
+Vec3f BSplineCurve::evaluate(int index, float t) {
     assert(index >= 3 && index < getNumVertices());
     float b0 = (1 - t) * (1 - t) * (1 - t) / 6,
             b1 = (3 * t * t * t - 6 * t * t + 4) / 6,
@@ -123,7 +130,7 @@ Vec2f BSplineCurve::evaluate(int index, float t) {
             b3 = t * t * t / 6;
     auto p = b0 * vertices[index - 3] + b1 * vertices[index - 2] +
              b2 * vertices[index - 1] + b3 * vertices[index];
-    return {p.x(), p.y()};
+    return p;
 }
 
 void BSplineCurve::OutputBSpline(FILE *file) {

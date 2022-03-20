@@ -15,7 +15,7 @@ public:
 
     void Paint(ArgParser *args) override;
 
-    virtual void drawCurveLine(ArgParser *args) = 0;
+    virtual std::vector<Vec3f> tessellate(ArgParser *args) = 0;
 
 protected:
     Matrix matConvert;
@@ -43,9 +43,9 @@ public:
         matConvert = matBezier * matBSpline;
     }
 
-    Vec2f evaluate(int index, int num, float t);
+    Vec3f evaluate(int index, int num, float t);
 
-    void drawCurveLine(ArgParser *args) override;
+    std::vector<Vec3f> tessellate(ArgParser *args) override;
 
     void OutputBezier(FILE *file) override;
 
@@ -74,9 +74,9 @@ public:
         matConvert = matBSpline * matBezier;
     }
 
-    Vec2f evaluate(int index, float t);
+    Vec3f evaluate(int index, float t);
 
-    void drawCurveLine(ArgParser *args) override;
+    std::vector<Vec3f> tessellate(ArgParser *args) override;
 
     void OutputBezier(FILE *file) override;
 
