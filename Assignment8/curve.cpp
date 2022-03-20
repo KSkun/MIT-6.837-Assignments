@@ -6,6 +6,7 @@
 #include <GL/gl.h>
 
 #include "curve.h"
+#include "matrix.h"
 
 void Curve::Paint(ArgParser *args) {
     // draw control polygon
@@ -75,6 +76,33 @@ Vec2f BezierCurve::evaluate(int index, int num, float t) {
     return v1[0];
 }
 
+void BezierCurve::OutputBezier(FILE *file) {
+    fprintf(file, "bezier\n");
+    fprintf(file, "num_vertices %d\n", getNumVertices());
+    for (const auto &p: vertices) {
+        fprintf(file, "%f %f %f\n", p.x(), p.y(), p.z());
+    }
+}
+
+void BezierCurve::OutputBSpline(FILE *file) {
+    assert(getNumVertices() == 4);
+    float vertexArr[] = {
+            vertices[0].x(), vertices[1].x(), vertices[2].x(), vertices[3].x(),
+            vertices[0].y(), vertices[1].y(), vertices[2].y(), vertices[3].y(),
+            vertices[0].z(), vertices[1].z(), vertices[2].z(), vertices[3].z(),
+            0, 0, 0, 0
+    };
+    Matrix vertexMat(vertexArr);
+    vertexMat *= matConvert;
+
+    fprintf(file, "bspline\n");
+    fprintf(file, "num_vertices %d\n", getNumVertices());
+    for (int i = 0; i < 4; i++) {
+        fprintf(file, "%f %f %f\n",
+                vertexMat.Get(i, 0), vertexMat.Get(i, 1), vertexMat.Get(i, 2));
+    }
+}
+
 void BSplineCurve::drawCurveLine(ArgParser *args) {
     assert(getNumVertices() >= 4);
     for (int i = 3; i < vertices.size(); i++) {
@@ -96,4 +124,31 @@ Vec2f BSplineCurve::evaluate(int index, float t) {
     auto p = b0 * vertices[index - 3] + b1 * vertices[index - 2] +
              b2 * vertices[index - 1] + b3 * vertices[index];
     return {p.x(), p.y()};
+}
+
+void BSplineCurve::OutputBSpline(FILE *file) {
+    fprintf(file, "bspline\n");
+    fprintf(file, "num_vertices %d\n", getNumVertices());
+    for (const auto &p: vertices) {
+        fprintf(file, "%f %f %f\n", p.x(), p.y(), p.z());
+    }
+}
+
+void BSplineCurve::OutputBezier(FILE *file) {
+    assert(getNumVertices() == 4);
+    float vertexArr[] = {
+            vertices[0].x(), vertices[1].x(), vertices[2].x(), vertices[3].x(),
+            vertices[0].y(), vertices[1].y(), vertices[2].y(), vertices[3].y(),
+            vertices[0].z(), vertices[1].z(), vertices[2].z(), vertices[3].z(),
+            0, 0, 0, 0
+    };
+    Matrix vertexMat(vertexArr);
+    vertexMat *= matConvert;
+
+    fprintf(file, "bezier\n");
+    fprintf(file, "num_vertices %d\n", getNumVertices());
+    for (int i = 0; i < 4; i++) {
+        fprintf(file, "%f %f %f\n",
+                vertexMat.Get(i, 0), vertexMat.Get(i, 1), vertexMat.Get(i, 2));
+    }
 }
