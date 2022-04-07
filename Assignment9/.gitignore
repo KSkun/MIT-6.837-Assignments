@@ -1,0 +1,6 @@
+.idea/
+cmake-build-debug/
+
+*.tga
+output*.txt
+*.obj
