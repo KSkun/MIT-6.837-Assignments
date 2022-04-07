@@ -1,0 +1,26 @@
+//
+// Created by KSkun on 2022/4/7.
+//
+
+#include "force_field.h"
+
+Vec3f ConstantForceField::getAcceleration(const Vec3f &position, float mass, float t) const {
+    auto acc = force;
+    acc.Scale(1.0f / mass, 1.0f / mass, 1.0f / mass);
+    return acc;
+}
+
+Vec3f RadialForceField::getAcceleration(const Vec3f &position, float mass, float t) const {
+    auto dir = position;
+    dir.Normalize();
+    dir.Scale(-magnitude, -magnitude, -magnitude);
+    return dir;
+}
+
+Vec3f VerticalForceField::getAcceleration(const Vec3f &position, float mass, float t) const {
+    auto dir = Vec3f(0, 1, 0);
+    if (position.y() > 0) dir.Scale(0, -1, 0);
+    else if (position.y() == 0) dir.Scale(0, 0, 0);
+    dir.Scale(0, magnitude, 0);
+    return dir;
+}

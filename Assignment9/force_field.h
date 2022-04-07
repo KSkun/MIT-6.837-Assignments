@@ -1,0 +1,51 @@
+//
+// Created by KSkun on 2022/4/7.
+//
+
+#ifndef ASSIGNMENT9_FORCE_FIELD_H
+#define ASSIGNMENT9_FORCE_FIELD_H
+
+
+#include "vectors.h"
+
+class ForceField {
+public:
+    virtual Vec3f getAcceleration(const Vec3f &position, float mass, float t) const = 0;
+};
+
+class ConstantForceField : public ForceField {
+public:
+    explicit ConstantForceField(const Vec3f &force) : force(force) {}
+
+    Vec3f getAcceleration(const Vec3f &position, float mass, float t) const override;
+
+private:
+    Vec3f force;
+};
+
+class GravityForceField : public ConstantForceField {
+public:
+    explicit GravityForceField(const Vec3f &gravity) : ConstantForceField(gravity) {}
+};
+
+class RadialForceField : public ForceField {
+public:
+    explicit RadialForceField(float magnitude) : magnitude(magnitude) {}
+
+    Vec3f getAcceleration(const Vec3f &position, float mass, float t) const override;
+
+private:
+    float magnitude;
+};
+
+class VerticalForceField : public ForceField {
+public:
+    explicit VerticalForceField(float magnitude) : magnitude(magnitude) {}
+
+    Vec3f getAcceleration(const Vec3f &position, float mass, float t) const override;
+
+private:
+    float magnitude;
+};
+
+#endif //ASSIGNMENT9_FORCE_FIELD_H
