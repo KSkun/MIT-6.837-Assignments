@@ -99,14 +99,14 @@ public:
   void Read(FILE *F);
   void Read3x3(FILE *F);
 
-  static float Matrix::det4x4(float a1, float a2, float a3, float a4, 
+  static float det4x4(float a1, float a2, float a3, float a4,
 			      float b1, float b2, float b3, float b4, 
 			      float c1, float c2, float c3, float c4, 
 			      float d1, float d2, float d3, float d4);
-  static float Matrix::det3x3(float a1,float a2,float a3,
+  static float det3x3(float a1,float a2,float a3,
 			      float b1,float b2,float b3,
 			      float c1,float c2,float c3);
-  static float Matrix::det2x2(float a, float b,
+  static float det2x2(float a, float b,
 			      float c, float d);
 
 private:
