@@ -13,14 +13,14 @@ Vec3f ConstantForceField::getAcceleration(const Vec3f &position, float mass, flo
 Vec3f RadialForceField::getAcceleration(const Vec3f &position, float mass, float t) const {
     auto dir = position;
     dir.Normalize();
-    dir.Scale(-magnitude, -magnitude, -magnitude);
+    dir.Scale(-magnitude / mass, -magnitude / mass, -magnitude / mass);
     return dir;
 }
 
 Vec3f VerticalForceField::getAcceleration(const Vec3f &position, float mass, float t) const {
     auto dir = Vec3f(0, 1, 0);
-    if (position.y() > 0) dir.Scale(0, -1, 0);
-    else if (position.y() == 0) dir.Scale(0, 0, 0);
-    dir.Scale(0, magnitude, 0);
+    if (fabs(position.y()) < 1e-6) dir.Scale(0, 0, 0); // add epsilon to avoid oscillation
+    else if (position.y() > 0) dir.Scale(0, -1, 0);
+    dir.Scale(0, magnitude / mass, 0);
     return dir;
 }
