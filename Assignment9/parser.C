@@ -119,7 +119,7 @@ Generator* Parser::ParseGenerator() {
     answer = new HoseGenerator(position,position_randomness,
 			       velocity,velocity_randomness);
   } else if (!strcmp(type,"ring_generator")) {
-//    answer = new RingGenerator(position_randomness,velocity,velocity_randomness);
+    answer = new RingGenerator(position_randomness,velocity,velocity_randomness);
   } else {
     printf ("WARNING:  unknown generator type '%s'\n", type);
     printf ("WARNING:  unknown generator type '%s'\n", type);
@@ -157,7 +157,7 @@ Integrator* Parser::ParseIntegrator() {
   } else if (!strcmp(type,"midpoint_integrator")) {
     answer = new MidpointIntegrator();
   } else if (!strcmp(type,"rungekutta_integrator")) {
-//    answer = new RungeKuttaIntegrator();
+    answer = new RungeKuttaIntegrator();
   } else {
     printf ("WARNING:  unknown integrator type '%s'\n", type);
   }

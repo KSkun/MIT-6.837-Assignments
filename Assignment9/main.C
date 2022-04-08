@@ -5,8 +5,6 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 
-using namespace std;
-
 #include "glCanvas.h"
 #include "parser.h"
 

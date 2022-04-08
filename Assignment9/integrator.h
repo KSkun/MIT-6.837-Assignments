@@ -35,5 +35,15 @@ public:
     }
 };
 
+class RungeKuttaIntegrator : public Integrator {
+public:
+    void Update(Particle *particle, ForceField *forcefield, float t, float dt) override;
+
+
+    Vec3f getColor() override {
+        return {0, 0, 1};
+    }
+};
+
 
 #endif //ASSIGNMENT9_INTEGRATOR_H

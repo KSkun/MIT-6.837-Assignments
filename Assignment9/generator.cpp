@@ -42,8 +42,8 @@ Particle *RingGenerator::Generate(float current_time, float dt, int i) {
 
     auto radius = current_time;
     auto numP = numNewParticles(current_time, dt);
-    float angle = (float) i / numP * M_PI_2;
-    auto p = randomVec3f(rand, {radius * cos(angle), radius * sin(angle), 0}, positionRandomness);
+    float angle = (float) i / numP * M_PI * 2.0f;
+    auto p = randomVec3f(rand, {radius * cos(angle), 0, radius * sin(angle)}, positionRandomness);
 
     return new Particle(p, v, c, dc, m, l);
 }

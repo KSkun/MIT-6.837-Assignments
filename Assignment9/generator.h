@@ -5,8 +5,10 @@
 #ifndef ASSIGNMENT9_GENERATOR_H
 #define ASSIGNMENT9_GENERATOR_H
 
-#include <ctime>
+#include <windows.h>
+#include <GL/gl.h>
 
+#include <ctime>
 #include <random>
 
 #include "vectors.h"
@@ -38,8 +40,8 @@ public:
     }
 
     // on each timestep, create some particles
-    int numNewParticles(float current_time, float dt) const {
-        return dt * desiredNumParticles / lifespan;
+    virtual int numNewParticles(float current_time, float dt) const {
+        return ceil(dt * desiredNumParticles / lifespan);
     }
 
     virtual Particle *Generate(float current_time, float dt, int i) = 0;
@@ -89,7 +91,22 @@ public:
         this->velocityRandomness = velocity_randomness;
     }
 
+    int numNewParticles(float current_time, float dt) const override {
+        return ceil(dt * desiredNumParticles / lifespan * current_time);
+    }
+
     Particle *Generate(float current_time, float dt, int i) override;
+
+    void Paint() const override {
+        glBegin(GL_QUADS);
+        glColor3f(1, 1, 1);
+        glNormal3f(0, 0, -1);
+        glVertex3f(-100.0f, -1.0f, -100.0f);
+        glVertex3f(-100.0f, -1.0f, 100.0f);
+        glVertex3f(100.0f, -1.0f, 100.0f);
+        glVertex3f(100.0f, -1.0f, -100.0f);
+        glEnd();
+    }
 
 protected:
     float positionRandomness;

@@ -55,7 +55,7 @@ void System::Update(float dt) {
   // generate new particles
   int num_new = generator->numNewParticles(current_time,dt);
   for (int i = 0; i < num_new; i++) {
-    Particle *p = generator->Generate(current_time,i);
+    Particle *p = generator->Generate(current_time,dt,i);
     assert (p != NULL);
     particles->Add(p);
   }
