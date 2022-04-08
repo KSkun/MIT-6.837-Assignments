@@ -19,7 +19,7 @@ Vec3f randomVec3f(std::mt19937 &rand, const Vec3f &value, float randomness) {
     return value + Vec3f(r1, r2, r3) * randomness;
 }
 
-Particle *HoseGenerator::Generate(float current_time, int i) {
+Particle *HoseGenerator::Generate(float current_time, float dt, int i) {
     auto c = randomVec3f(rand, color, colorRandomness);
     c.Clamp();
     auto dc = randomVec3f(rand, deadColor, colorRandomness);
@@ -28,5 +28,22 @@ Particle *HoseGenerator::Generate(float current_time, int i) {
     auto m = randomFloat(rand, mass, massRandomness);
     auto p = randomVec3f(rand, position, positionRandomness);
     auto v = randomVec3f(rand, velocity, velocityRandomness);
+    return new Particle(p, v, c, dc, m, l);
+}
+
+Particle *RingGenerator::Generate(float current_time, float dt, int i) {
+    auto c = randomVec3f(rand, color, colorRandomness);
+    c.Clamp();
+    auto dc = randomVec3f(rand, deadColor, colorRandomness);
+    dc.Clamp();
+    auto l = randomFloat(rand, lifespan, lifespanRandomness);
+    auto m = randomFloat(rand, mass, massRandomness);
+    auto v = randomVec3f(rand, velocity, velocityRandomness);
+
+    auto radius = current_time;
+    auto numP = numNewParticles(current_time, dt);
+    float angle = (float) i / numP * M_PI_2;
+    auto p = randomVec3f(rand, {radius * cos(angle), radius * sin(angle), 0}, positionRandomness);
+
     return new Particle(p, v, c, dc, m, l);
 }

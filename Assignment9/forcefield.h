@@ -23,9 +23,14 @@ private:
     Vec3f force;
 };
 
-class GravityForceField : public ConstantForceField {
+class GravityForceField : public ForceField {
 public:
-    explicit GravityForceField(const Vec3f &gravity) : ConstantForceField(gravity) {}
+    explicit GravityForceField(const Vec3f &gravity) : gravity(gravity) {}
+
+    Vec3f getAcceleration(const Vec3f &position, float mass, float t) const override;
+
+private:
+    Vec3f gravity;
 };
 
 class RadialForceField : public ForceField {

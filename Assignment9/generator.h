@@ -42,7 +42,7 @@ public:
         return dt * desiredNumParticles / lifespan;
     }
 
-    virtual Particle *Generate(float current_time, int i) = 0;
+    virtual Particle *Generate(float current_time, float dt, int i) = 0;
 
     // for the gui
     virtual void Paint() const {}
@@ -72,7 +72,7 @@ public:
         this->velocityRandomness = velocity_randomness;
     }
 
-    Particle *Generate(float current_time, int i) override;
+    Particle *Generate(float current_time, float dt, int i) override;
 
 protected:
     Vec3f position;
@@ -81,5 +81,20 @@ protected:
     float velocityRandomness;
 };
 
+class RingGenerator : public Generator {
+public:
+    RingGenerator(float position_randomness, const Vec3f &velocity, float velocity_randomness) {
+        this->positionRandomness = position_randomness;
+        this->velocity = velocity;
+        this->velocityRandomness = velocity_randomness;
+    }
+
+    Particle *Generate(float current_time, float dt, int i) override;
+
+protected:
+    float positionRandomness;
+    Vec3f velocity;
+    float velocityRandomness;
+};
 
 #endif //ASSIGNMENT9_GENERATOR_H
