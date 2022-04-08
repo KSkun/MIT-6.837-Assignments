@@ -2,7 +2,7 @@
 // Created by KSkun on 2022/4/7.
 //
 
-#include "force_field.h"
+#include "forcefield.h"
 
 Vec3f ConstantForceField::getAcceleration(const Vec3f &position, float mass, float t) const {
     auto acc = force;

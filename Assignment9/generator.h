@@ -20,7 +20,7 @@ public:
     }
 
     // initialization
-    void SetColors(Vec3f color, Vec3f dead_color, float color_randomness) {
+    void SetColors(const Vec3f &color, const Vec3f &dead_color, float color_randomness) {
         this->color = color;
         this->deadColor = dead_color;
         this->colorRandomness = color_randomness;
@@ -60,6 +60,25 @@ protected:
     float lifespan, lifespanRandomness;
     int desiredNumParticles;
     float mass, massRandomness;
+};
+
+class HoseGenerator : public Generator {
+public:
+    HoseGenerator(const Vec3f &position, float position_randomness,
+                  const Vec3f &velocity, float velocity_randomness) {
+        this->position = position;
+        this->positionRandomness = position_randomness;
+        this->velocity = velocity;
+        this->velocityRandomness = velocity_randomness;
+    }
+
+    Particle *Generate(float current_time, int i) override;
+
+protected:
+    Vec3f position;
+    float positionRandomness;
+    Vec3f velocity;
+    float velocityRandomness;
 };
 
 

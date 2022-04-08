@@ -18,7 +18,7 @@ Parser::Parser(const char *filename) {
   getToken(token);
   assert (!strcmp(token,"num_systems"));
   num_systems = readInt();
-  systems = new (System*)[num_systems];
+  systems = new System*[num_systems];
 
   // read the systems
   for (int i = 0; i < num_systems; i++) {
@@ -119,7 +119,7 @@ Generator* Parser::ParseGenerator() {
     answer = new HoseGenerator(position,position_randomness,
 			       velocity,velocity_randomness);
   } else if (!strcmp(type,"ring_generator")) {
-    answer = new RingGenerator(position_randomness,velocity,velocity_randomness);
+//    answer = new RingGenerator(position_randomness,velocity,velocity_randomness);
   } else {
     printf ("WARNING:  unknown generator type '%s'\n", type);
     printf ("WARNING:  unknown generator type '%s'\n", type);
@@ -157,7 +157,7 @@ Integrator* Parser::ParseIntegrator() {
   } else if (!strcmp(type,"midpoint_integrator")) {
     answer = new MidpointIntegrator();
   } else if (!strcmp(type,"rungekutta_integrator")) {
-    answer = new RungeKuttaIntegrator();
+//    answer = new RungeKuttaIntegrator();
   } else {
     printf ("WARNING:  unknown integrator type '%s'\n", type);
   }
@@ -210,7 +210,7 @@ ForceField* Parser::ParseForceField() {
   } else if (!strcmp(type,"vertical_forcefield")) {
     answer = new VerticalForceField(magnitude);
   } else if (!strcmp(type,"wind_forcefield")) {
-    answer = new WindForceField(magnitude);
+//    answer = new WindForceField(magnitude);
   } else {
     printf ("WARNING:  unknown forcefield type '%s'\n", type);
   }

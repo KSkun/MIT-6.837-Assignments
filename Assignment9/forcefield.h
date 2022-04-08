@@ -2,8 +2,8 @@
 // Created by KSkun on 2022/4/7.
 //
 
-#ifndef ASSIGNMENT9_FORCE_FIELD_H
-#define ASSIGNMENT9_FORCE_FIELD_H
+#ifndef ASSIGNMENT9_FORCEFIELD_H
+#define ASSIGNMENT9_FORCEFIELD_H
 
 
 #include "vectors.h"
@@ -48,4 +48,4 @@ private:
     float magnitude;
 };
 
-#endif //ASSIGNMENT9_FORCE_FIELD_H
+#endif //ASSIGNMENT9_FORCEFIELD_H

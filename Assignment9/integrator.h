@@ -7,7 +7,7 @@
 
 
 #include "particle.h"
-#include "force_field.h"
+#include "forcefield.h"
 
 class Integrator {
 public:
