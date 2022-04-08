@@ -2,7 +2,7 @@
 
 ![logo](images/7_logo.png)
 
-Assigments of MIT 6.837 *Intro to Computer Graphics* by KSkun. The image above is one of the rendering results from Assignment 7.
+Assigments of [MIT 6.837 *Intro to Computer Graphics* (2004 Fall)](https://groups.csail.mit.edu/graphics/classes/6.837/F04/) by KSkun. The image above is one of the rendering results from Assignment 7.
 
 - **Language:** C++
 
